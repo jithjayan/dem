@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div class="form-container">
+        <div>
+        <h4>ADD Main CATEGORY</h4><br>
+        <form action="" method="post" enctype="multipart/form-data">
+          {% csrf_token %}
+            <div class="mb-2 mt-2">
+                <!-- <label for="" class="form-label">Plant ID:</label> -->
+                <input type="text" class="form-control" placeholder="Enter Category" name="m_name">
+              </div>
+              <div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+              </div>
+        </form>
+      </div>
+      <a href="add_catg">add catg</a>
+      </div>
+      {% for i in Main_cat%}
+      <h2>{{i.m_name}}</h2><br>
+      {% endfor %}
+    </body>
+</html>

@@ -1,0 +1,43 @@
+/* -----------------userprofile-------------------- */
+.userpbody{
+
+    background-color: #bee6c0;
+}    
+.usrdiv1{
+    margin-top: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+    background-color: #f7f7f7;
+}
+
+.usrdiv2{
+margin-top: 10px;
+box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+height: 50px;
+background-color: #f7f7f7;
+
+}
+
+.usrdiv3{
+    margin-top: 1px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+    text-align: center;
+    background-color: #f7f7f7;
+
+}
+
+.usrdiv4{
+    margin-top: 10px;
+    height: 30px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    background-color: #f7f7f7;
+
+}
+
+#usrdiv5{
+    margin-top: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: #f7f7f7;
+
+
+}
