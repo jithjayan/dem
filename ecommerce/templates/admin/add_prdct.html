@@ -10,7 +10,7 @@
 </head>
 <body>
 
-    <form action="" method="post" nctype="multipart/form-data">
+    <form action="" method="POST" enctype="multipart/form-data">
         {% csrf_token %}
     <div class="mb-3">
         <input type="text" class="form-control" id="id" placeholder="id" name="p_id" required>
@@ -44,15 +44,27 @@
       <div class="mb-3">
         <input type="file" class="form-control" id="img2" placeholder="image2" name="img2" required>
       </div>
+      <div class="mb-2">
+        <label for="prd_cate2" class="form-label">Pro Main catg:</label>
+        <select name="prd_cate2" id="" >
+          {% for i in data2 %}
+            <option value="{{i.m_name}}">{{i.m_name}}</option>
+          {% endfor %}
+          </select>          
+    </div>
 
       <div class="mb-2">
         <label for="prd_cate" class="form-label">Product Category:</label>
         <select name="prd_cate" id="" >
-          {% for i in data1 %}
-            <option value="{{i.c_name}}">{{i.c_name}}</option>
+          {% for j in data1 %}
+            <option value="{{i.c_name}}">{{j.c_name}}</option>
           {% endfor %}
           </select>          
     </div>
+
+
+<!-- -----------end------------- -->
+
     <div class="mb-2">
       <label for="prd_cate2" class="form-label">Pro Main catg:</label>
       <select name="prd_cate2" id="" >
@@ -60,7 +72,18 @@
           <option value="{{i.m_name}}">{{i.m_name}}</option>
         {% endfor %}
         </select>          
+
+
+    <div class="mb-2">
+      <label for="prd_cate" class="form-label">Product Category:</label>
+      <select name="prd_cate" id="" >
+      
+        {% for j in data1 %}
+          <option value="{{i.c_name}}">{{j.c_name}}</option>
+        {% endfor %}
+        </select>         
   </div>
+
 
       <button type="submit" class="btn btn-primary">Submit</button>
     </form>

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    {% load static %}
+</head>
+<body>
+    <div class="body">
+        <div class="container">
+          <div class="row productRow">
+            {% for i in data %}
+            <div class="column">
+              <a class="product" href="../product/{{i.pk}}">
+                <img class="petPhoto" src="{{i.img.url}}" alt="">
+                <h6>{{i.name}}</h6>
+      
+              </a>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+</body>
+</html>

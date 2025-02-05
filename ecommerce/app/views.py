@@ -50,12 +50,12 @@ def reg(req):
         else:
             return render(req,'user/register.html')
 
-def admin_home(req):
+# def admin_home(req):
     
-    data=Category.objects.all()
-    p_data=Plants.objects.all()
+#     data=Category.objects.all()
+#     p_data=Plants.objects.all()
     
-    return render(req,'admin/adminhome.html',{'Category':data,'Plants':p_data})
+#     return render(req,'admin/adminhome.html',{'Category':data,'Plants':p_data})
     # return render(req,'admin/adminhome.html',{'Category':data,'Plants':p_data})
 
 def user_home(req):
@@ -86,14 +86,17 @@ def view_pro(req,pid):
     data=Plants.objects.get(pk=pid)
     return render(req,'user/view_pro.html',{'data':data})
 def add_to_cart(req,pid):
-    prdct=Plants.objects.get(pk=pid)
-    try:
+    if 'user' in req.session:
+        prdct=Plants.objects.get(pk=pid)
+        try:
 
-        user=User.objects.get(username=req.session['user'])
-        data=Cart.objects.create(user=user,Plants=prdct)
-        data.save()
-        return redirect(view_cart)
-    except:
+            user=User.objects.get(username=req.session['user'])
+            data=Cart.objects.create(user=user,Plants=prdct)
+            data.save()
+            return redirect(view_cart)
+        except:
+            return redirect(m_login)
+    else:
         return redirect(m_login)
 
 def view_cart(req):
@@ -204,6 +207,23 @@ def add_prd(req):
     else:
         return redirect(m_login)
 
+
+def admin_home(req):
+    
+    c_data=Category.objects.all()
+    p_data=Plants.objects.all()
+    m_data=Main_cat.objects.all()
+    
+    return render(req,'admin/adminhome.html',{'c_data':c_data,'p_data':p_data,'m_data':m_data})
+
+def products(req,pid):
+    if 'admin' in req.session:
+        data=Plants.objects.filter(catg=pid)
+        c_data=Category.objects.all()
+        # m_data=Main_cat.objects.all()
+        return render(req,'admin/products.html',{'data':data,'c_data':c_data})
+    else:
+        return redirect(m_login)
 
 
 # def view_category(req):
