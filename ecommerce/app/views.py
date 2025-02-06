@@ -60,7 +60,11 @@ def reg(req):
 
 def user_home(req):
     data=Plants.objects.all()[::-1]
-    return render(req,'user/userhome.html',{'Plants':data})
+    c_data=Category.objects.all()
+    p_data=Plants.objects.all()
+    m_data=Main_cat.objects.all()
+
+    return render(req,'user/userhome.html',{'Plants':data,'c_data':c_data,'p_data':p_data,'m_data':m_data})
 
 def homep(req):
     return redirect(user_home)
@@ -70,7 +74,27 @@ def int_plt(req):
     return render(req,'user/p_1.html',{'Plants':data})
 
 def user_prfl(req):
-    return render(req,'user/userprf.html')
+    # return render(req,'user/userprf.html')
+    if 'user' in req.session:
+        user=User.objects.get(username=req.session['user'])
+        data1=Address.objects.filter(user=user)
+
+        if req.method == 'POST':
+            user=User.objects.get(username=req.session['user'])
+            name=req.POST['name']
+            phn=req.POST['phn']
+            pin=req.POST['pin']
+            loc=req.POST['loc']
+            adrs=req.POST['adrs']
+            city=req.POST['city']
+            state=req.POST['state']
+            data=Address.objects.create(user=user,name=name,phn=phn,pin=pin,loc=loc,adrs=adrs,city=city,state=state)
+            data.save()
+            return redirect(addrs)
+        else:
+            return render(req,'user/userprf.html',{'data1':data1})
+    else:
+        return render(req,"user/userprf.html",{'data1':data1,'user':user})
 
 def user_logout(req):
     req.session.flush()
@@ -138,6 +162,31 @@ def add_catg(req):
         data1=Main_cat.objects.all()
         return render(req,'admin/add_catg.html',{'Main_cat':data1})
 
+# def catg(req):
+#     if req.method=='POST':
+#         name=req.POST['m_name']
+#         data=Main_cat.objects.create(m_name=name)
+#         data.save()
+#         return redirect(add_Mcatg)
+#     else:
+#         data=Category.objects.all()
+#         data1=Main_cat.objects.all()
+#         return render(req,'admin/add_Mcatg.html',{'Category':data,'Main_cat':data1})
+    
+# def add_catg(req):
+#     data2=Category.objects.all()
+
+#     if req.method=='POST':
+#         prd_c=req.POST['prd_c']
+#         name=req.POST['c_name']
+#         # data=Category.objects.create(m_cat=Main_cat.objects.get(m_name=prd_c),c_name=name)
+#         main_cat = Main_cat.objects.get(m_name=prd_c)
+#         data = Category.objects.create(m_cat=main_cat, c_name=name)
+#         data.save()
+#         return render(req,'admin/add_catg.html',{'data':data,'data2':data2})
+#     else:
+#         data1=Main_cat.objects.all()
+#         return render(req,'admin/add_catg.html',{'Main_cat':data1})
 
 def buy(req):
     if 'user' in req.session:
@@ -166,9 +215,9 @@ def addrs(req):
             data.save()
             return redirect(addrs)
         else:
-            return render(req,'user/adrs.html',{'data1':data1})
+            return render(req,'user/userprf.html',{'data1':data1})
     else:
-        return render(req,"user/userprf.html")
+        return render(req,"user/userprf.html",{'data1':data1})
 
 def delete_address(req,pid):
     if 'user' in req.session:
@@ -217,10 +266,9 @@ def admin_home(req):
     return render(req,'admin/adminhome.html',{'c_data':c_data,'p_data':p_data,'m_data':m_data})
 
 def products(req,pid):
-    if 'admin' in req.session:
+    if 'user' in req.session:
         data=Plants.objects.filter(catg=pid)
         c_data=Category.objects.all()
-        # m_data=Main_cat.objects.all()
         return render(req,'admin/products.html',{'data':data,'c_data':c_data})
     else:
         return redirect(m_login)

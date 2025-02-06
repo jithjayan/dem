@@ -1,239 +1,231 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     {% load static %}
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
-
+    <link rel="stylesheet" href="'{% static css/userprfl.css%'}">
+    <link rel="stylesheet" href="{% static 'css/style.css'%}">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-    <link rel="stylesheet" href="{% static 'css/userprfl.css' %}">
-
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/css/bootstrap.min.css" rel="stylesheet">
+ 
 </head>
-<body class="userpbody" style="background-color: #bee6c0;">
-    <!-- ---------navbar---------- -->
 
-<nav class="navbar navbar-expand-sm " id="navb">
-    <div class="container-fluid">
-      <a class="navbar-brand" href="homep">ROOTED</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#collapsibleNavbar">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="collapsibleNavbar">
-        <ul class="navbar-nav me-auto">
-          <li class="nav-item" id="dropdown">
-            <a href="" class="nav-link" id="dropbtn"> plants
-            </a>
-            <div class="dropdown-content">
-              <a href="int_plt">Indoor Plants</a>
-              <a href="#">Flowering Plants</a>
-              <a href="#">Low Maintains Plants</a>
-              <a href="#">Air Purifying Plants</a>
-              <a href="#">Low Light Plants</a>
-              <a href="#">Cacti & Succulents Plants</a>
-              <a href="#">Hanging Plants</a>
-              <a href="#">Fruit Plants</a>
-              <a href="#">Bundle Plants</a>
-              <a href="#">Others</a>
-  
-            </div>
-          </li> 
-          <li class="nav-item" id="dropdown">
-            <a href="" class="nav-link" id="dropbtn">Seeds
-            </a>
-            <div class="dropdown-content">
-              <a href="#">Flower Seeds</a>
-              <a href="#">Vegetable Seeds</a>
-              <a href="#">Flower Bulbs</a>
-              <a href="#">Fruit Seeds</a>
-              <a href="#">Others</a>
-            </div>
-          </li> 
-          <li class="nav-item" id="dropdown">
-            <a href="" class="nav-link" id="dropbtn"> Planters & Accessories
-            </a>
-            <div class="dropdown-content">
-              <a href="#">Plastic Pots</a>
-              <a href="#">Ceramic Pots</a>
-              <a href="#">Metalic Planters</a>
-              <a href="#">Wooden Planters</a>
-              <a href="#">Hanging Planters</a>
-              <a href="#">Plant Stands</a>
-              <a href="#">Others</a>
-            </div>
-          </li>  
-          <li class="nav-item" >
-            <a href="" class="nav-link" id="dropbtn"> Fertilizers
-            </a>
-          </li> 
-        </ul>
-  <!-- 
-        <div class="collapse navbar-collapse" id="mynavbar">
-     
-        </div> -->
-        <form class="d-flex">
-          <input class="form-control me-2" type="text" placeholder="Search">
-          <button class="btn btn-primary" type="button">Search</button>
-          <ul class="navbar-nav me-auto">
-            <li class="nav-item">
-              <a class="nav-link" href="m_login"><i class="fa-solid fa-user"></i></a>
-            </li>
-            <li class="nav-item" >
-              <a class="nav-link" href=""><i class="fa-solid fa-cart-shopping"></i></a>
-            </li>
+<body class="bdpr">
+
+    <nav class="navbar navbar-expand-sm " id="navb">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="#">ROOTED</a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#collapsibleNavbar">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="collapsibleNavbar">
+            <ul class="navbar-nav me-auto">
+              <li class="nav-item" id="dropdown">
+                <a href="" class="nav-link" id="dropbtn"> plants
+                </a>
+                <div class="dropdown-content">
+                  <a href="int_plt">Indoor Plants</a>
+                  <a href="#">Flowering Plants</a>
+                  <a href="#">Low Maintains Plants</a>
+                  <a href="#">Air Purifying Plants</a>
+                  <a href="#">Low Light Plants</a>
+                  <a href="#">Cacti & Succulents Plants</a>
+                  <a href="#">Hanging Plants</a>
+                  <a href="#">Fruit Plants</a>
+                  <a href="#">Bundle Plants</a>
+                  <a href="#">Others</a>
     
-          </ul>
-        </form>
+                </div>
+              </li> 
+              <li class="nav-item" id="dropdown">
+                <a href="" class="nav-link" id="dropbtn">Seeds
+                </a>
+                <div class="dropdown-content">
+                  <a href="#">Flower Seeds</a>
+                  <a href="#">Vegetable Seeds</a>
+                  <a href="#">Flower Bulbs</a>
+                  <a href="#">Fruit Seeds</a>
+                  <a href="#">Others</a>
+                </div>
+              </li> 
+              <li class="nav-item" id="dropdown">
+                <a href="" class="nav-link" id="dropbtn"> Planters & Accessories
+                </a>
+                <div class="dropdown-content">
+                  <a href="#">Plastic Pots</a>
+                  <a href="#">Ceramic Pots</a>
+                  <a href="#">Metalic Planters</a>
+                  <a href="#">Wooden Planters</a>
+                  <a href="#">Hanging Planters</a>
+                  <a href="#">Plant Stands</a>
+                  <a href="#">Others</a>
+                </div>
+              </li>  
+              <li class="nav-item" >
+                <a href="" class="nav-link" id="dropbtn"> Fertilizers
+                </a>
+              </li> 
+            </ul>
+    <!-- 
+            <div class="collapse navbar-collapse" id="mynavbar">
+         
+            </div> -->
+            <form class="d-flex">
+              <input class="form-control me-2" type="text" placeholder="Search">
+              <button class="btn btn-primary" type="button">Search</button>
+              <ul class="navbar-nav me-auto">
+                <li class="nav-item" >
+                  <a class="nav-link" href="view_cart"><i class="fa-solid fa-cart-shopping"></i></a>
+                </li>
         
-     
-  
-      </div>  
-    </div>
-  </nav>
-  <!-- ---------------navbarend------------- -->
-  
-
-
-
-<!-- ----------cnt--------- -->
-
-<div class="container"  >
-  <div class="row">
-    <div class="col-lg-3" style=" width: 30%; ">
-      <div class="usrdiv1">
-        <img src="{% static 'images/prfl.webp' %}" alt="" style="height: 50px; width: 50px;"> 
-        <p>Hello,user</p>
-      </div>
-      <!-- <a href="" style="text-decoration: none; color: black;">  -->
-      <div class="usrdiv2">
-        <i class="fa-solid fa-truck-fast" style="margin-right: 20px;margin-left: 10%;" ></i> ORDERS
-      </div></a>
-      <div class="usrdiv3">
-        <p>ACCOUNT SETTINGS</p>
-        <a href="" style="text-decoration: none; color: black;"> <div>Profile information</div></a>
-        <a href="adrs" style="text-decoration: none; color: black;"><div> Manage Address </div></a>
-      </div>
-      <div class="usrdiv4">
-        <a href="user_logout" style="text-decoration: none; color: black;"> <div> <i class="fa-solid fa-power-off"></i>logout</div></a>
-      </div>
-    </div>
-    <div class="col-lg-7" id="usrdiv5">
-      <div class="row" style="margin-top: 20px;">
-        <form action="">
-          <label for="">First Name</label>
-          <input type="text" placeholder="name" value="">
-          <label for="" style="margin-left: 40px;">Last Name</label>
-          <input type="text" placeholder="name" value=""><br><br>
-          <label for="">Email Address</label><br>
-          <input type="email" placeholder="email" value=""><br><br>
-          <label for="">Number</label>
-          <input type="number" name="" id="" placeholder="Contact Number" >
-          <label for="" style="margin-left: 40px;">DOB</label>
-          <input type="date" name="" id="" ><br><br>
-          <label for="">Gender</label><br>
-          <input type="radio" name="gender" id="" value="gnd">Male <input type="radio" name="gender" value="gnd">Female
-        </form>
-      </div>
-    </div>
-  </div>
-    </div>
-  </div>
-</div>
-<!-- ------------------footer--------------------- -->
-
-<footer
-class="text-center text-lg-start text-white"
-    border-color: #4CAF50;
-    style="background-color: #55ac58;margin-top: 20px;"
+              </ul>
+            </form>
+            
+         
     
->
-<!-- Grid container -->
-<div class="container p-4 pb-0">
-<!-- Section: Links -->
-<!--Grid row-->
-<div class="row">
-<!-- Grid column -->
-<div class="col-md-3 ">
-  <h6 class="text-uppercase mb-4 font-weight-bold">
-    ROOTED
-  </h6>
-  <p>
-    Our goal is to transform your home garden into a personal sanctuary.
-  </p>
-</div>
-<!-- Grid column -->
+          </div>  
+        </div>
+      </nav>
+    <!-- ---------------navbarend------------- -->
+    <div class="container light-style flex-grow-1 container-p-y">
+        <h4 class="font-weight-bold py-3 mb-4">
+            Account settings
+        </h4>
+        <div class="card overflow-hidden">
+            <div class="row no-gutters row-bordered row-border-light">
+                <div class="col-md-3 pt-0">
+                    <div class="list-group list-group-flush account-settings-links">
+                        <a class="list-group-item list-group-item-action active" data-toggle="list"
+                            href="#account-general">General</a>
+                        <a class="list-group-item list-group-item-action" data-toggle="list"
+                            href="#account-change-password">Change password</a>
+                        <a class="list-group-item list-group-item-action" data-toggle="list"
+                            href="#account-info">Orders</a>
+                        <a class="list-group-item list-group-item-action" data-toggle="list"
+                            href="#account-social-links">Manage Address</a>
+                        <!-- <a class="list-group-item list-group-item-action" data-toggle="list"
+                            href="#account-connections">Profile Information</a> -->
+                        <a class="list-group-item list-group-item-action" data-toggle=""
+                            href="user_logout" >Logout</a>
+                    </div>
+                </div>
+                <div class="col-md-9">
+                    <div class="tab-content">
+                        <div class="tab-pane fade active show" id="account-general">
+                            <div class="card-body media align-items-center">
+                                <img src="{% static 'images/prfl.webp' %}" alt
+                                    class="d-block ui-w-80 " style="height: 50px; width: 50px;">
+                                  <h5>HI,{{user.name}}</h5>
+                            </div>
+                            <hr class="border-light m-0">
+                            <div class="card-body">
+                              
+                                <div class="form-group">
+                                    <label class="form-label">Name</label>
+                                    <input type="text" class="form-control" value="{{user}}">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">E-mail</label>
+                                    <input type="text" class="form-control mb-1" value="{{user.email}}">
+                                    <!-- <div class="alert alert-warning mt-3">
+                                        Your email is not confirmed. Please check your inbox.<br>
+                                        <a href="javascript:void(0)">Resend confirmation</a>
+                                    </div> -->
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Phone Number</label>
+                                    <input type="number" class="form-control" value="9999999999">
+                                </div>
+                            </div>
+                            <div class="text-right mt-3">
+                                <button type="button" class="btn btn-primary">Save changes</button>&nbsp;
+                                <button type="button" class="btn btn-default">Cancel</button>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="account-change-password">
+                            <div class="card-body pb-2">
+                                <div class="form-group">
+                                    <label class="form-label">Current password</label>
+                                    <input type="password" class="form-control">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">New password</label>
+                                    <input type="password" class="form-control">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Repeat new password</label>
+                                    <input type="password" class="form-control">
+                                </div>
+                            </div>
+                            <div class="text-right mt-3">
+                                <button type="button" class="btn btn-primary">Save changes</button>&nbsp;
+                                <button type="button" class="btn btn-default">Cancel</button>
+                            </div>
+                        </div>
+                        <!-- <div class="tab-pane fade" id="account-info">
+                        </div> -->
+                        <div class="tab-pane fade" id="account-social-links">
+                       
+                            <div class="container"  >
+                                <div class="row">
+                        
+                                    <div class="col-lg-7" id="usrdiv5">
+                                        <div class="row" style="margin-top: 20px;">
+                                          <form action="" method="post">
+                                            {% csrf_token %}
+                                            <input type="text" placeholder="Name"  name="name" value="" required>
+                                            <input type="number" placeholder="Phone no." name="phn" value="" required><br><br>
+                                            <input type="number" placeholder="Pincode" name="pin" value="" required> 
+                                            <input type="text" name="loc" id="" placeholder="Locality" required><br><br>
+                                            <input type="text" name="adrs" id="" placeholder="Address" required><br><br>
+                                            <input type="text" name="city" id="" placeholder="City/District/Town" required><br><br>
+                                            <input type="text" name="state" id="" placeholder="State" required><br><br>
+                                              <button type="submit" class="btn btn-primary  btn1">Submit</button>
+                        
+                                        </form>
+                                        </div>
+                                      </div>
+                        
+                                      <div class="col-lg-5">
+                                        {% for i in data1 %}
+                                        <div class="card">
+                                          <div class="card-body">
+                                              <h4 class="card-title"> name: {{i.name}}</h4>
+                                              <h5 class="card-text"> ph : {{i.phn}}</h5>
+                                              <h5 class="card-text">pin : {{i.pin}}</h5>
+                                              <h5 class="card-text">location : {{i.loc}}</h5>
+                                              <h5 class="card-text">Address : {{i.adrs}}</h5>
+                                              <h5 class="card-text">city : {{i.city}}</h5>
+                                              <h5 class="card-text">state : {{i.state}}</h5>
+                        
+                                              <a href="delete_address/{{i.pk}}" class="btn btn-danger">Delete</a>
+                                          </div>
+                                        </div>
+                                        {% endfor %}
+                                      </div>
+                                    </div>
+                        
+                        
+                                </div>
+                            </div>
+                            
+                        </div>
+      
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script> -->
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- <script type="text/javascript"> -->
 
-<hr class="w-100 clearfix d-md-none" />
-
-<!-- Grid column -->
-<div class="col-md-2 ">
-  <h6 class="text-uppercase mb-4 font-weight-bold">ABOUT</h6>
-  <p>
-    <a class="text-white">Contact US</a>
-  </p>
-  <p>
-    <a class="text-white">About UD</a>
-  </p>
-
-</div>
-<!-- Grid column -->
-
-<hr class="w-100 clearfix d-md-none" />
-
-<!-- Grid column -->
-<hr class="w-100 clearfix d-md-none" />
-
-<!-- Grid column -->
-<div class="col-md-4 col-lg-3 col-xl-3 mx-auto mt-3">
-  <h6 class="text-uppercase mb-4 font-weight-bold">Contact</h6>
-  <p><i class="fas fa-home mr-3"></i> Adoor, kerala, India</p>
-  <p><i class="fas fa-envelope mr-3"></i> rooted.plants50@gmail.com</p>
-  <p><i class="fas fa-phone mr-3"></i> 1 234 567 88</p>
-  <p><i class="fas fa-print mr-3"></i> 01 234 567 89</p>
-</div>
-<!-- Grid column -->
-
-<!-- Grid column -->
-<div class="col-md-3 col-lg-2 col-xl-2 mx-auto mt-3">
-  <h6 class="text-uppercase mb-4 font-weight-bold">Follow us</h6>
-
-  <!-- Facebook -->
-  <a
-     class="btn btn-primary btn-floating m-1"
-     style="background-color: #3b5998"
-     href="#!"
-     role="button"
-     ><i class="fab fa-facebook-f"></i
-    ></a>
-
-  <!-- Twitter -->
-  <a
-     class="btn btn-primary btn-floating m-1"
-     style="background-color: #55acee"
-     href="#!"
-     role="button"
-     ><i class="fab fa-twitter"></i
-    ></a>
-
-  <!-- Instagram -->
-  <a
-     class="btn btn-primary btn-floating m-1"
-     style="background-color: #ac2bac"
-     href="#!"
-     role="button"
-     ><i class="fab fa-instagram"></i
-    ></a>
-
-</div>
-</div>
-</div>
-</footer>
-<!------------------ Footer end------------------ -->
-
-
-
+    </script>
 </body>
+
 </html>
