@@ -265,13 +265,45 @@ def admin_home(req):
     
     return render(req,'admin/adminhome.html',{'c_data':c_data,'p_data':p_data,'m_data':m_data})
 
-def products(req,pid):
-    if 'user' in req.session:
-        data=Plants.objects.filter(catg=pid)
-        c_data=Category.objects.all()
-        return render(req,'admin/products.html',{'data':data,'c_data':c_data})
+def view_prdts(req):
+    data=Plants.objects.all()
+    return render(req,'admin/view_prdts.html',{'data':data})
+
+def update_prd(req,pid):
+    data=Plants.objects.get(pk=pid)
+    if req.method=='POST':
+        p_id=req.POST['p_id']
+        name=req.POST['name']
+        p_catg=req.POST['p_catg']
+        p_dis=req.POST['p_dis']
+        price=req.POST['price']
+        offer_price=req.POST['offer_price']
+        img= req.FILES['img']
+        img2=req.FILES['img2']
+        data=Plants.objects.filter(pk=pid).update(p_id=p_id,name=name,p_catg=p_catg,p_dis=p_dis,price=price,offer_price=offer_price,img=img,img2=img2)
+        return redirect(view_prdts)
     else:
-        return redirect(m_login)
+        data1=Category.objects.all()
+        data2=Main_cat.objects.all()
+        return render(req,'admin/update.html',{'data':data,'data1':data1,'data2':data2})
+    
+def delete_prd(req,pid):
+    data=Plants.objects.get(pk=pid)
+    url=data.img.url
+    og_path=url.split('/')[-1]
+    os.remove('media/'+og_path)
+    data.delete()
+    print(og_path)
+    return redirect(view_prdts)
+
+# def products(req,pid):
+#     if 'user' in req.session:
+#         data=Plants.objects.filter(catg=pid)
+#         c_data=Category.objects.all()
+#         return render(req,'admin/products.html',{'data':data,'c_data':c_data})
+#     else:
+#         return redirect(m_login)
+
 
 
 # def view_category(req):

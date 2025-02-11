@@ -34,20 +34,17 @@
             </div>
           </li> 
           <li class="nav-item" id="dropdown">
-            <a href="" class="nav-link" id="dropbtn">Update
+            <a href="" class="nav-link" id="dropbtn">products
             </a>
             <div class="dropdown-content">
-              <a href="">Product</a>
-              <a href="">category</a>
+              <a href="../view_prdts">Product</a>
+              <!-- <a href="">category</a> -->
             </div>
           </li> 
           <li class="nav-item" id="dropdown">
-            <a href="" class="nav-link" id="dropbtn">Delete
+            <a href="" class="nav-link" id="dropbtn">Orders
             </a>
-            <div class="dropdown-content">
-              <a href="">Product</a>
-              <a href="">category</a>
-            </div>
+        
           </li>  
 
         </ul>
@@ -80,57 +77,7 @@
 
 
 
-    <!-- <a href="add_catg" class="nav-link" id="dropbtn"> category</a> -->
-
-
     
-
-     <nav class="navbar navbar-expand-sm " id="navb">
-      <div class="container-fluid">
-        <a class="navbar-brand" href="homep">ROOTED</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#collapsibleNavbar">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="collapsibleNavbar">
-          
-          
-          <ul class="navbar-nav me-auto">
-            {% for i in m_data%}
-            <li class="nav-item" id="dropdown">
-              <a href="" class="nav-link" id="dropbtn">{{i.m_name}}</a>
-              
-              <div class="dropdown-content">
-                {% for j in c_data %}
-                {% if j.m_cat == i%}
-                <a href="products/{{j.pk}}">{{j.c_name}}</a>
-                {% endif %}
-                {% endfor %}
-              </div>
-              
-
-            {% endfor %}
-
-          </ul>
-  
-
-          <form class="d-flex">
-            <input class="form-control me-2" type="text" placeholder="Search">
-            <button class="btn btn-primary" type="button">Search</button>
-            <ul class="navbar-nav me-auto">
-              <li class="nav-item">
-                <a class="nav-link" href="m_login"><i class="fa-solid fa-user"></i></a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="view_cart"><i class="fa-solid fa-cart-shopping"></i></a>
-              </li>
-              
-            </ul>
-          </form>
-
-        </div>  
-      </div>
-    </nav>
-   
   <!-- -----------end------------- -->
   
 
