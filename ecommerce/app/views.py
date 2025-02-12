@@ -66,6 +66,16 @@ def user_home(req):
 
     return render(req,'user/userhome.html',{'Plants':data,'c_data':c_data,'p_data':p_data,'m_data':m_data})
 
+def search(req):
+    srch = req.GET.get('srch', '').strip()  # Safely get search term
+    data = []
+
+    if srch:  # Only search if the term is not empty
+        data = Plants.objects.filter(name__icontains=srch)  # Case-insensitive search
+
+    return render(req, 'user/search.html', {'data': data, 'srch': srch})
+
+
 def homep(req):
     return redirect(user_home)
 
@@ -296,6 +306,11 @@ def delete_prd(req,pid):
     print(og_path)
     return redirect(view_prdts)
 
+
+
+
+
+
 # def products(req,pid):
 #     if 'user' in req.session:
 #         data=Plants.objects.filter(catg=pid)
@@ -306,12 +321,6 @@ def delete_prd(req,pid):
 
 
 
-# def view_category(req):
-#     data=Category.objects.all()
-#     return render(req,'admin/add_catg.html',{'Category':data})
 
-
-# def filter_data(req,cat):
-#     data=
 
 

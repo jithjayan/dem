@@ -25,6 +25,8 @@ urlpatterns=[
     path('view_prdts',views.view_prdts),
     path('update_prd/<pid>',views.update_prd),
     path('delete_prd/<pid>',views.delete_prd),
+    path('search',views.search),
+
     # path('view_category',views.view_category),
  
 
