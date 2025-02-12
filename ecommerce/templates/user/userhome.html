@@ -59,21 +59,21 @@
       </ul>
 
       
-      <form class="d-fle0x" method="post" action=".">
+      <form class="d-flex" method="post" action=".">
         {% csrf_token %}
         <input class="form-control me-2" type="text" placeholder="Search" value="{{ srch }}" name="srch">
         <button class="btn btn-primary" type="submit" >Search</button>
-
+        <ul class="navbar-nav me-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="m_login"><i class="fa-solid fa-user"></i></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="view_cart"><i class="fa-solid fa-cart-shopping"></i></a>
+          </li>
+          
+        </ul>
       </form>
-      <ul class="navbar-nav me-auto">
-        <li class="nav-item">
-          <a class="nav-link" href="m_login"><i class="fa-solid fa-user"></i></a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="view_cart"><i class="fa-solid fa-cart-shopping"></i></a>
-        </li>
-        
-      </ul>
+
     </div>  
   </div>
 </nav>

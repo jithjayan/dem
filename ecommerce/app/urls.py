@@ -12,6 +12,7 @@ urlpatterns=[
     path('user_logout',views.user_logout),
     path('homep',views.homep),
     path('add_to_cart/<pid>',views.add_to_cart),
+    path('delete_cart/<pid>',views.delete_cart),
     path('view_cart',views.view_cart),
     path('view_pro/<pid>',views.view_pro),
     path('add_catg',views.add_catg),

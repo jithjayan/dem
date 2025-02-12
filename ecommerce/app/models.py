@@ -22,6 +22,7 @@ class Plants(models.Model):
     offer_price=models.IntegerField()
     img=models.FileField()
     img2=models.FileField()
+    stock=models.IntegerField()
     catg=models.ForeignKey(Category,on_delete=models.CASCADE)
     mcatg=models.ForeignKey(Main_cat,on_delete=models.CASCADE)
     def __str__(self):
@@ -29,6 +30,8 @@ class Plants(models.Model):
 class Cart(models.Model):
     user=models.ForeignKey(User,on_delete=models.CASCADE)
     Plants=models.ForeignKey(Plants,on_delete=models.CASCADE)
+    qty=models.IntegerField()
+    price=models.FloatField()
     
 class Address(models.Model):
     user=models.ForeignKey(User,on_delete=models.CASCADE)

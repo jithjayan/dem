@@ -118,20 +118,39 @@ def admin_logout(req):
 
 def view_pro(req,pid):
     data=Plants.objects.get(pk=pid)
+    
     return render(req,'user/view_pro.html',{'data':data})
 def add_to_cart(req,pid):
     if 'user' in req.session:
         prdct=Plants.objects.get(pk=pid)
+        user=User.objects.get(username=req.session['user'])
+
         try:
 
-            user=User.objects.get(username=req.session['user'])
             data=Cart.objects.create(user=user,Plants=prdct)
+            data.qty+=1
+            data.price=data.prdct.offer_price*data.qty
             data.save()
-            return redirect(view_cart)
+            # return redirect(view_cart)
         except:
-            return redirect(m_login)
+            price=prdct.offer_price
+            data=Cart.objects.create(user=user,Plants=prdct,qty=1,price=price)
+            data.save()
+        prdct.stock-=1
+        prdct.save()
+        return redirect(view_cart)
     else:
         return redirect(m_login)
+    
+
+def delete_cart(req,pid):
+    if 'user' in req.session:
+        data=Cart.objects.get(pk=pid)
+        data.delete()
+        return redirect(view_cart)
+    else:
+        return redirect(m_login)
+
 
 def view_cart(req):
     if 'user' in req.session:
