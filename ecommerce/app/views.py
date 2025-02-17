@@ -120,6 +120,7 @@ def view_pro(req,pid):
     data=Plants.objects.get(pk=pid)
     
     return render(req,'user/view_pro.html',{'data':data})
+
 def add_to_cart(req,pid):
     if 'user' in req.session:
         prdct=Plants.objects.get(pk=pid)
@@ -129,7 +130,7 @@ def add_to_cart(req,pid):
 
             data=Cart.objects.create(user=user,Plants=prdct)
             data.qty+=1
-            data.price=data.prdct.offer_price*data.qty
+            data.price=data.Plants.offer_price*data.qty
             data.save()
             # return redirect(view_cart)
         except:
@@ -156,40 +157,82 @@ def view_cart(req):
     if 'user' in req.session:
         user=User.objects.get(username=req.session['user'])
         cart_dtls=Cart.objects.filter(user=user)
-        return render(req,'user/cart.html',{'cart_dtls':cart_dtls})
+        total=0
+        for i in cart_dtls:
+            total+=i.price
+        return render(req,'user/cart.html',{'cart_dtls':cart_dtls,'total':total})
+    else:
+        return redirect(m_login)
+
+def cartIncrement(req,pid):
+    if 'user' in req.session:
+        data=Cart.objects.get(pk=pid)
+        if data.Plants.stock>0:
+            data.qty+=1
+            data.price=data.Plants.offer_price*data.qty
+            pro=data.Plants
+            pro.stock-=1
+            pro.save()
+            data.save()
+        return redirect(view_cart)
+    else:
+        return redirect(m_login) 
+       
+def cartDecrement(req,pid):
+    if 'user' in req.session:
+        data=Cart.objects.get(pk=pid)
+        if(data.qty>0):
+            data.qty-=1
+            data.price=data.Plants.offer_price*data.qty
+            pro=data.Plants
+            pro.stock+=1
+            pro.save()
+            data.save()
+        if data.qty==0:
+            data.delete()
+        return redirect(view_cart)
     else:
         return redirect(m_login)
 
 
 
-
-
     
 def add_Mcatg(req):
+
     if req.method=='POST':
-        name=req.POST['m_name']
-        data=Main_cat.objects.create(m_name=name)
-        data.save()
+        if 'main_form' in req.POST:
+            name=req.POST['m_name']
+            data=Main_cat.objects.create(m_name=name)
+            data.save()
+            # return redirect(add_Mcatg)
+        elif 'catg_form' in req.POST:
+            m_ctg=req.POST['m_ctg']
+            name=req.POST['it_ctg']
+            # main_cat = Main_cat.objects.get(m_name=m_ctg)
+            data2 = Category.objects.create(m_cat=Main_cat.objects.get(m_name=m_ctg), c_name=name)
+            data2.save()
         return redirect(add_Mcatg)
     else:
         data=Category.objects.all()
         data1=Main_cat.objects.all()
         return render(req,'admin/add_Mcatg.html',{'Category':data,'Main_cat':data1})
+    # else:
+    #     return redirect(m_login)
     
-def add_catg(req):
-    data2=Category.objects.all()
+# def add_catg(req):
+#     data2=Category.objects.all()
 
-    if req.method=='POST':
-        prd_c=req.POST['prd_c']
-        name=req.POST['c_name']
-        # data=Category.objects.create(m_cat=Main_cat.objects.get(m_name=prd_c),c_name=name)
-        main_cat = Main_cat.objects.get(m_name=prd_c)
-        data = Category.objects.create(m_cat=main_cat, c_name=name)
-        data.save()
-        return render(req,'admin/add_catg.html',{'data':data,'data2':data2})
-    else:
-        data1=Main_cat.objects.all()
-        return render(req,'admin/add_catg.html',{'Main_cat':data1})
+#     if req.method=='POST':
+#         prd_c=req.POST['prd_c']
+#         name=req.POST['c_name']
+#         data=Category.objects.create(m_cat=Main_cat.objects.get(m_name=prd_c),c_name=name)
+#         main_cat = Main_cat.objects.get(m_name=prd_c)
+#         data = Category.objects.create(m_cat=main_cat, c_name=name)
+#         data.save()
+#         return render(req,'admin/add_catg.html',{'data':data,'data2':data2})
+#     else:
+#         data1=Main_cat.objects.all()
+#         return render(req,'admin/add_catg.html',{'Main_cat':data1})
 
 # def catg(req):
 #     if req.method=='POST':
@@ -217,13 +260,18 @@ def add_catg(req):
 #         data1=Main_cat.objects.all()
 #         return render(req,'admin/add_catg.html',{'Main_cat':data1})
 
-def buy(req):
+def buy(req,pid):
     if 'user' in req.session:
         user=User.objects.get(username=req.session['user'])
+        prdt=Plants.objects.get(pk=pid)
         data=Address.objects.filter(user=user)
-        return render(req,'user/buy.html',{'data':data})
+        return render(req,'user/buy.html',{'data':data,'prdt':prdt})
     else:
         return redirect(m_login)
+
+
+
+
 
 
 def addrs(req):
@@ -257,6 +305,30 @@ def delete_address(req,pid):
         return redirect(user_prfl)
 
 
+def change_pswd(req):
+    if 'user' in req.session:
+        if req.method=='POST':
+            user=User.objects.get(username=req.session['user'])
+            current_password = req.POST['current_password']
+            new_password = req.POST['new_password']
+            repeat_password = req.POST['repeat_password']
+            if new_password==repeat_password:
+                if user.check_password(current_password):
+                    user.set_password(new_password)
+                    user.save()
+                    messages.success(req,"Password changed successfully")
+                    return redirect(change_pswd)
+                else:
+                    messages.warning(req,"Old password is incorrect")
+                    return redirect(change_pswd)
+            else:
+                messages.warning(req,"Password not matched")
+                return redirect(change_pswd)
+        else:
+            return render(req,'user/change_pswd.html')
+    else:
+        return redirect(m_login)
+
 # -------------admin---------
 
 
@@ -269,13 +341,14 @@ def add_prd(req):
             p_dis=req.POST['p_dis']
             price=req.POST['price']
             offer_price=req.POST['offer_price']
+            stock=req.POST['stock']
             img= req.FILES['img']
             img2=req.FILES['img2']
             prd_cate=req.POST['prd_cate']
             prd_cate2=req.POST['prd_cate2']
             cat = Category.objects.get(c_name=prd_cate)
             main_cat = Main_cat.objects.get(m_name=prd_cate2)
-            data=Plants.objects.create(p_id=p_id,name=name,p_catg=p_catg,p_dis=p_dis,price=price,offer_price=offer_price,img=img,img2=img2,catg=cat,mcatg=main_cat)
+            data=Plants.objects.create(p_id=p_id,name=name,p_catg=p_catg,p_dis=p_dis,price=price,offer_price=offer_price,stock=stock,img=img,img2=img2,catg=cat,mcatg=main_cat)
             data.save()
             return redirect(add_prd)
         else:
@@ -307,14 +380,20 @@ def update_prd(req,pid):
         p_dis=req.POST['p_dis']
         price=req.POST['price']
         offer_price=req.POST['offer_price']
+        stock=req.POST['stock']
         img= req.FILES['img']
         img2=req.FILES['img2']
-        data=Plants.objects.filter(pk=pid).update(p_id=p_id,name=name,p_catg=p_catg,p_dis=p_dis,price=price,offer_price=offer_price,img=img,img2=img2)
+        if img:
+            data=Plants.objects.filter(pk=pid).update(p_id=p_id,name=name,p_catg=p_catg,p_dis=p_dis,price=price,offer_price=offer_price,stock=stock,img=img)
+        elif img2:
+            data=Plants.objects.filter(pk=pid).update(p_id=p_id,name=name,p_catg=p_catg,p_dis=p_dis,price=price,offer_price=offer_price,stock=stock,img2=img2)
+        else:   
+            data=Plants.objects.filter(pk=pid).update(p_id=p_id,name=name,p_catg=p_catg,p_dis=p_dis,price=price,offer_price=offer_price,stock=stock)
         return redirect(view_prdts)
     else:
         data1=Category.objects.all()
         data2=Main_cat.objects.all()
-        return render(req,'admin/update.html',{'data':data,'data1':data1,'data2':data2})
+        return render(req,'admin/update.html',{'data':data,'data1':data1,'dcta2':data2})
     
 def delete_prd(req,pid):
     data=Plants.objects.get(pk=pid)
@@ -334,7 +413,7 @@ def products(req,pid):
     if 'user' in req.session:
         data=Plants.objects.filter(catg=pid)
         c_data=Category.objects.all()
-        return render(req,'admin/products.html',{'data':data,'c_data':c_data})
+        return render(req,'user/products.html',{'data':data,'c_data':c_data})
     else:
         return redirect(m_login)
 

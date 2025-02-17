@@ -15,9 +15,9 @@ urlpatterns=[
     path('delete_cart/<pid>',views.delete_cart),
     path('view_cart',views.view_cart),
     path('view_pro/<pid>',views.view_pro),
-    path('add_catg',views.add_catg),
+    # path('add_catg',views.add_catg),
     path('admin_logout',views.admin_logout),
-    path('buy',views.buy),
+    path('buy/<pid>',views.buy),
     path('adrs',views.addrs),
     path('delete_address/<pid>',views.delete_address),
     path('add_prd',views.add_prd),
@@ -26,7 +26,10 @@ urlpatterns=[
     path('view_prdts',views.view_prdts),
     path('update_prd/<pid>',views.update_prd),
     path('delete_prd/<pid>',views.delete_prd),
+    path('cartIncrement/<pid>',views.cartIncrement),
+    path('cartDecrement/<pid>',views.cartDecrement),
     path('search',views.search),
+    path('change_pswd',views.change_pswd),
 
     # path('view_category',views.view_category),
  

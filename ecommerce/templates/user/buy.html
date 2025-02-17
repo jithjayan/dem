@@ -8,9 +8,90 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     {% load static %}
 </head>
+<style>
+  .os2{
+    padding-top: 20px;
+}
+.os2 .col-lg-8 .row2{
+    padding: 20px;
+    height: 200px;
+    border: 1px solid;
+    border-radius: 10px;
+}
+.os2 .col-lg-8 .row img{
+    border-radius: 5px;
+    width: 200px;
+    height: 150px;
+}
+.os2 .col-lg-8 h3{
+    font-size: 20px;
+}
+.os2 .col-lg-8 .row3{
+    margin: 0;
+    padding: 0;
+}
+.os2 .col-lg-8 .row3 .col-xs-6{
+    padding: 0;
+}
+.os2 .name{
+    font-weight: 700;
+    color: rgb(77, 76, 75);
+}
+.os2 a{
+    text-decoration: none;
+    color: black;
+}
+.os2 .col-lg-4 #address{
+    width: 350px;
+    height: 50px;
+}
+.os2 .row4{
+    margin-top: 20px;
+}
+.os2 .row4 .col-lg-6 h3{
+    font-size: 18px;
+}
+.pay .btn{
+    background-color: orange;
+    color: white;
+}
+.os{
+    padding-top: 20px;
+}
+.os img{
+    width: 300px;
+    height: 280px;
+    border-radius: 5px;
+    display:block;
+    margin:auto;
+}
+.os a{
+    text-decoration: none;
+    color: black;
+}
+.os .name{
+    font-weight: 700;
+    color: rgb(77, 76, 75);
+}
+.os .row2{
+    margin-top: 20px;
+}
+.os .row2 .col-lg-6 h3{
+    font-size: 20px;
+}
+.os .btn,.address .btn1,.addressForm .btn{
+    border-color: orange;
+    color: orange;
+
+}
+.os .btn,.address .btn1 , .addressForm .btn:hover{
+    background-color: orange;
+    color: white;
+}
+</style>
 <body>
 
-    <div class="container" >
+    <!-- <div class="container" >
         <div class="row" style="border: 2px solid black;">
           <div class="col-lg-3" style=" width: 30%px; ">
             <div class="usrdiv1">
@@ -32,7 +113,7 @@
                     <h5 class="card-text"> ph : {{i.phn}}</h5>
                     <h5 class="card-text">Address : {{i.adrs}},{{i.loc}},{{i.pin}},{{i.city}},{{i.state}}</h5>
       
-                    <!-- <a href="delete_address/{{i.pk}}" class="btn btn-danger">Delete</a> -->
+                    <a href="delete_address/{{i.pk}}" class="btn btn-danger">Delete</a>
                 </div>
               </div>
             </div></label>
@@ -41,15 +122,46 @@
           {% endfor %}
 
         <div>
-          <a href="adrs" class="btn btn-outline-dark">Add Address</a>
+          <a href="../adrs" class="btn btn-outline-dark">Add Address</a>
         </div>
 
         </div>
-    </div>
+    </div> -->
 
 
+    <div class="body">
+      <div class="container os">
+        <div class="row">
+          <div class="col-lg-4">
+            <img src="{{prod.product.img.url}}" alt="">
+            <h3 class="name">{{prod.product.name}}</h3>
+  </div>
+  <div class="col-lg-8">
+    <form class="addressForm" action="" method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      <label for="">Shipping address : </label><br>
+      <select name="address" id="address">
+        {% for i in data %}
+        <option value="{{i.pk}}">{{i.name}},{{i.house}},{{i.street}},{{i.pin}},{{i.state}}</option>
+        {% endfor %}
+      </select><br>
+      <a href="../../../adrs">Add new address + </a>
+      <div class="row row2">
+        <div class="col-lg-6">
+          <h3>Total amount payable : </h3>
+        </div>
+        <div class="col-lg-6">
+          <h3 class="offerPrice">{{prod.offerr_price}}</h3>
+        </div>
+      </div>
+  
 
-
+      <button type="submit" class="btn">CONFIRM</button>
+    </form>
+  </div>
+</div>
+</div>
+</div>
  
 
 

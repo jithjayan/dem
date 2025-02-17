@@ -217,14 +217,16 @@
               <p class="price">${{ item.Plants.price }}</p>
           </div>
           <div class="quantity">
-              <input type="number" value="{{ item.quantity }}" min="1" >
+              <!-- <input type="number" value="{{ item.qty }}" min="1" > -->
+              <a class="btn" href="cartDecrement/{{item.pk}}">-</a>
+              <h4 id="qty">{{item.qty}}</h4><a class="btn" href="cartIncrement/{{item.pk}}">+</a>
               <a href="../delete_cart/{{item.pk}}" class="remove-btn"><i class="fas fa-trash-alt"></i> Remove</a>
           </div>
       </div>
       {% endfor %}
       <div class="total">
           <span>Total</span>
-          <span>${{ total_price }}</span>
+          <span>${{ total }}</span>
       </div>
       <a href="#" class="checkout-btn">Proceed to Checkout</a>
   {% else %}
