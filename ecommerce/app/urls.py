@@ -22,7 +22,7 @@ urlpatterns=[
     path('delete_address/<pid>',views.delete_address),
     path('add_prd',views.add_prd),
     path('add_Mcatg',views.add_Mcatg),
-    # path('products/<pid>',views.products),
+    path('products/<pid>',views.products),
     path('view_prdts',views.view_prdts),
     path('update_prd/<pid>',views.update_prd),
     path('delete_prd/<pid>',views.delete_prd),

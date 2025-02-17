@@ -330,13 +330,13 @@ def delete_prd(req,pid):
 
 
 
-# def products(req,pid):
-#     if 'user' in req.session:
-#         data=Plants.objects.filter(catg=pid)
-#         c_data=Category.objects.all()
-#         return render(req,'admin/products.html',{'data':data,'c_data':c_data})
-#     else:
-#         return redirect(m_login)
+def products(req,pid):
+    if 'user' in req.session:
+        data=Plants.objects.filter(catg=pid)
+        c_data=Category.objects.all()
+        return render(req,'admin/products.html',{'data':data,'c_data':c_data})
+    else:
+        return redirect(m_login)
 
 
 
