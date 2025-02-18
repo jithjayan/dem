@@ -6,6 +6,7 @@ from django.contrib.auth.models import User
 from django.contrib import messages
 from django.core.mail import send_mail
 from django.conf import settings
+from django.db.models import Q
 
 # Create your views here.
 
@@ -118,8 +119,21 @@ def admin_logout(req):
 
 def view_pro(req,pid):
     data=Plants.objects.get(pk=pid)
-    
-    return render(req,'user/view_pro.html',{'data':data})
+    m_data=Main_cat.objects.all()
+    c_data=Category.objects.all()
+
+    return render(req,'user/view_pro.html',{'data':data,'m_data':m_data,'c_data':c_data})
+
+
+def search(req):
+    m_data=Main_cat.objects.all()
+    c_data=Category.objects.all()
+    query = req.GET.get('query', '').strip()  
+    if query:
+        data = Plants.objects.filter( Q(name__icontains=query))
+    else:
+        data = [] 
+    return render(req, 'user/search.html', {'data': data,'m_data':m_data,'c_data':c_data})
 
 def add_to_cart(req,pid):
     if 'user' in req.session:
@@ -157,10 +171,12 @@ def view_cart(req):
     if 'user' in req.session:
         user=User.objects.get(username=req.session['user'])
         cart_dtls=Cart.objects.filter(user=user)
+        m_data=Main_cat.objects.all()
+        c_data=Category.objects.all()
         total=0
         for i in cart_dtls:
             total+=i.price
-        return render(req,'user/cart.html',{'cart_dtls':cart_dtls,'total':total})
+        return render(req,'user/cart.html',{'cart_dtls':cart_dtls,'total':total,'m_data':m_data,'c_data':c_data})
     else:
         return redirect(m_login)
 
@@ -344,11 +360,11 @@ def add_prd(req):
             stock=req.POST['stock']
             img= req.FILES['img']
             img2=req.FILES['img2']
-            prd_cate=req.POST['prd_cate']
+            prd_cate=req.POST.get['prd_cate']
             prd_cate2=req.POST['prd_cate2']
-            cat = Category.objects.get(c_name=prd_cate)
-            main_cat = Main_cat.objects.get(m_name=prd_cate2)
-            data=Plants.objects.create(p_id=p_id,name=name,p_catg=p_catg,p_dis=p_dis,price=price,offer_price=offer_price,stock=stock,img=img,img2=img2,catg=cat,mcatg=main_cat)
+            # cat= Category.objects.get(c_name=prd_cate)
+            # main_cat = Main_cat.objects.get(m_name=prd_cate2)
+            data=Plants.objects.create(p_id=p_id,name=name,p_catg=p_catg,p_dis=p_dis,price=price,offer_price=offer_price,stock=stock,img=img,img2=img2,catg=prd_cate,mcatg=prd_cate2)
             data.save()
             return redirect(add_prd)
         else:

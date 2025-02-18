@@ -59,9 +59,9 @@
       </ul>
 
       
-      <form class="d-flex" method="post" action=".">
+      <form class="d-flex" method="GET" action="../search">
         {% csrf_token %}
-        <input class="form-control me-2" type="text" placeholder="Search" value="{{ srch }}" name="srch">
+        <input class="form-control me-2" type="text" placeholder="Search" value="{{ srch }}" name="query">
         <button class="btn btn-primary" type="submit" >Search</button>
         <ul class="navbar-nav me-auto">
           <li class="nav-item">
