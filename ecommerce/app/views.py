@@ -7,6 +7,7 @@ from django.contrib import messages
 from django.core.mail import send_mail
 from django.conf import settings
 from django.db.models import Q
+from django.utils.crypto import get_random_string
 
 # Create your views here.
 
@@ -35,22 +36,132 @@ def m_login(req):
         return render(req,'login.html')
 
 
+# def reg(req):
+#         if req.method=='POST':
+#             name=req.POST['name']
+#             email=req.POST['email']
+#             password=req.POST['password']
+#             try:
+#                 send_mail('user registration', 'account created', settings.EMAIL_HOST_USER, [email])
+#                 data=User.objects.create_user(first_name=name,email=email,password=password,username=email)
+#                 data.save()
+#                 return redirect(m_login)
+#             except:
+#                 messages.warning(req,"Email not valid")
+#                 return redirect(reg)
+#         else:
+#             return render(req,'user/register.html')
+        
 def reg(req):
         if req.method=='POST':
             name=req.POST['name']
             email=req.POST['email']
             password=req.POST['password']
-            try:
-                send_mail('user registration', 'account created', settings.EMAIL_HOST_USER, [email])
-                data=User.objects.create_user(first_name=name,email=email,password=password,username=email)
-                data.save()
-                return redirect(m_login)
-            except:
-                messages.warning(req,"Email not valid")
+            if User.objects.filter(email=email).exists():
+                messages.warning(req, "Email already registered")
                 return redirect(reg)
-        else:
-            return render(req,'user/register.html')
+            otp = get_random_string(length=6, allowed_chars='0123456789')
+            req.session['otp'] = otp
+            req.session['email'] = email
+            req.session['name'] = name
+            req.session['password'] = password
+            send_mail(
+                'Your OTP Code',
+                f'Your OTP is: {otp}',
+                settings.EMAIL_HOST_USER, [email])
+            messages.success(req, "OTP sent to your email")
+            return redirect(verify_otp_reg)
 
+    
+        return render(req,'user/register.html')
+
+def verify_otp_reg(req):
+    if req.method == 'POST':
+        entered_otp = req.POST['otp'] 
+        stored_otp = req.session.get('otp')
+        email = req.session.get('email')
+        name = req.session.get('name')
+        password = req.session.get('password')
+        if entered_otp == stored_otp:
+            user = User.objects.create_user(first_name=name,username=email,email=email,password=password)
+            user.is_verified = True
+            user.save()      
+            messages.success(req, "Registration successful! You can now log in.")
+            send_mail('User Registration Succesfull', 'Account Created Succesfully And Welcome To Photox', settings.EMAIL_HOST_USER, [email])
+            return redirect(m_login)
+        else:
+            messages.warning(req, "Invalid OTP. Try again.")
+            return redirect(verify_otp_reg)
+
+    return render(req, 'verify_otp_reg.html')
+
+def resend_otp_reg(req):
+    email = req.session.get('email')
+    if email:
+        otp = get_random_string(length=6, allowed_chars='0123456789')
+        req.session['otp'] = otp
+        
+        send_mail(
+            'Your New OTP Code',
+            f'Your OTP is: {otp}',
+            settings.EMAIL_HOST_USER, [email]
+        )
+        messages.success(req, "OTP resent to your email")
+    
+    return redirect(verify_otp_reg)
+
+def forgetpassword(req):
+    if req.method == 'POST':
+        email = req.POST['email']
+        try:
+            user = User.objects.get(email=email)
+            otp = get_random_string(length=6, allowed_chars='0123456789')
+            req.session['otp'] = otp
+            req.session['email'] = email
+            send_mail('Password Reset OTP', f'Your OTP is: {otp}', settings.EMAIL_HOST_USER, [email])
+            messages.success(req, "OTP sent to your email")
+            return redirect(verify_otp)
+        except User.DoesNotExist:
+            messages.warning(req, "Email not found")
+            return redirect(forgetpassword)
+    return render(req,'forgetpassword.html')
+
+
+def verify_otp(req):
+    if req.method == 'POST':
+        otp = req.POST['otp']
+        if otp == req.session.get('otp'):
+            return redirect(resetpassword)
+        else:
+            messages.warning(req, "Invalid OTP")
+            return redirect(verify_otp)
+    return render(req, 'verify_otp.html')
+
+
+def resend_otp(req):  
+    email = req.session.get('email')
+    if email:
+        otp = get_random_string(length=6, allowed_chars='0123456789')
+        req.session['otp'] = otp
+        send_mail('Password Reset OTP', f'Your OTP is: {otp}', settings.EMAIL_HOST_USER, [email])
+        messages.success(req, "OTP resent to your email")
+    return redirect(verify_otp)
+
+
+def resetpassword(req):
+    if req.method == 'POST':
+        password = req.POST['password']  
+        email = req.session.get('email')
+        try:
+            user = User.objects.get(email=email)
+            user.set_password(password)
+            user.save()
+            messages.success(req, "Password reset successfully")
+            return redirect(m_login)
+        except User.DoesNotExist:
+            messages.warning(req, "Error resetting password")
+            return redirect(resetpassword)
+    return render(req, 'resetpassword.html')
 # def admin_home(req):
     
 #     data=Category.objects.all()

@@ -5,6 +5,15 @@ from . import views
 urlpatterns=[
     path('m_login',views.m_login),
     path('reg',views.reg),
+
+    path('verify_otp',views.verify_otp),
+    path('resend',views.resend_otp),
+    path('forget',views.forgetpassword),
+    path('reset',views.resetpassword),
+    path('verify_otp_reg',views.verify_otp_reg),
+    path('resend_otp_reg',views.resend_otp_reg ),
+
+
     path('admin_home',views.admin_home),
     path('',views.user_home),
     path('int_plt',views.int_plt),

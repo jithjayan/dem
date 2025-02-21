@@ -16,21 +16,27 @@
         <img src="{% static 'images/logo.png'%}" alt="" class="ml"><p >ROOTED</p>
     </div>
 
-    <div class="box2">
+
+
+<div class="box2" style="margin-top: 10%;">
     <div class="login-fr">
-        
         <h2>REGISTER</h2>
-        <form action="" method="POST">
+        <form action="" method="POST" id="form">
             {% csrf_token %}
-            <input type="text" name="name" class="form-input2" placeholder="Entre your name" required>
-            <input type="email" name="email" class="form-input2" placeholder="Entre your email" required>
-            <input type="password" name="password" class="form-input2" placeholder="Enter password" required>
+            <input type="text" name="name" class="form-input2" placeholder="Enter your name" required>
+            <input type="email" name="email" class="form-input2" placeholder="Enter your email" required>
+            <input type="password" name="password" class="form-input2" placeholder="Enter password" id="pasd" required>
             <!-- <input type="button" value="Register" class="login-button"> -->
-            <button type="submit" class="login-button" >Register</button>
-
+            <h3 id="h3"></h3>
+            <ul>
+                <li id="len">min length 8 char</li>
+                <li id="cap">min 1 cap letter</li>
+                <li id="sma">min 1 small letter</li>
+                <li id="num">min 1 number</li>
+                <li id="spl">min 1 special char</li>
+            </ul>
+            <button type="submit" class="login-button">Register</button>
         </form>
-   
-
     </div>
 </div>
 
@@ -44,5 +50,52 @@
     {% endfor %}
     {% endif %}
     </div>
+
+
+    <script>
+        document.getElementById("form").addEventListener('submit', function(event) {
+            event.preventDefault();
+    
+            let h3 = document.getElementById("h3");
+            let pasd = document.getElementById("pasd");
+            let len = document.getElementById("len");
+            let cap = document.getElementById("cap");
+            let sma = document.getElementById("sma");
+            let num = document.getElementById("num");
+            let spl = document.getElementById("spl");
+    
+            // Password validation before form submission
+            if (pasd.value.length >= 8 &&
+                /[A-Z]/.test(pasd.value) &&
+                /[a-z]/.test(pasd.value) &&
+                /\d/.test(pasd.value) &&
+                /[@#$%*&]/.test(pasd.value)) {
+                h3.innerHTML = 'Password is valid';
+                h3.style.color = 'green';
+                this.submit();
+            } else {
+                h3.innerHTML = 'Password is invalid';
+                h3.style.color = 'red';
+            }
+        });
+    
+        let pasd = document.getElementById("pasd");
+        let len = document.getElementById("len");
+        let cap = document.getElementById("cap");
+        let sma = document.getElementById("sma");
+        let num = document.getElementById("num");
+        let spl = document.getElementById("spl");
+    
+        pasd.addEventListener('input', function() {
+            let password = pasd.value;
+            len.style.color = password.length >= 8 ? 'green' : 'red';
+            cap.style.color = /[A-Z]/.test(password) ? 'green' : 'red';
+            sma.style.color = /[a-z]/.test(password) ? 'green' : 'red';
+            num.style.color = /\d/.test(password) ? 'green' : 'red';
+            spl.style.color = /[@#$%*&]/.test(password) ? 'green' : 'red';
+        });
+    </script>
+
+
 </body>
 </html>
