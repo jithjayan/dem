@@ -20,6 +20,7 @@ urlpatterns=[
     path('user_prfl',views.user_prfl),
     path('user_logout',views.user_logout),
     path('homep',views.homep),
+    path('a_home',views.a_home),
     path('add_to_cart/<pid>',views.add_to_cart),
     path('delete_cart/<pid>',views.delete_cart),
     path('view_cart',views.view_cart),
@@ -31,6 +32,10 @@ urlpatterns=[
     path('delete_address/<pid>',views.delete_address),
     path('add_prd',views.add_prd),
     path('add_Mcatg',views.add_Mcatg),
+    path('edit_Mcatg/<pid>',views.edit_Mcatg),
+    path('delete_Mcatg/<pid>',views.delete_Mcatg),
+    path('edit_catg/<pid>',views.edit_catg),
+    path('delete_catg/<pid>',views.delete_catg),
     path('products/<pid>',views.products),
     path('view_prdts',views.view_prdts),
     path('update_prd/<pid>',views.update_prd),
@@ -39,6 +44,7 @@ urlpatterns=[
     path('cartDecrement/<pid>',views.cartDecrement),
     path('search',views.search),
     path('change_pswd',views.change_pswd),
+    path('mcatgall/<pid>',views.mcatgall),
 
     # path('view_category',views.view_category),
  

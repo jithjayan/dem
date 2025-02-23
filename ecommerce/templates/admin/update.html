@@ -17,32 +17,40 @@
 
 <nav class="navbar navbar-expand-sm " id="navb">
   <div class="container-fluid">
-    <a class="navbar-brand" href="../homep">ROOTED</a>
+    <a class="navbar-brand" href="../a_home">ROOTED</a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#collapsibleNavbar">
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="collapsibleNavbar">
-      
-      
-      <ul class="navbar-nav me-auto">
-        {% for i in m_data%}
-        <li class="nav-item" id="dropdown">
-          <a href="" class="nav-link" id="dropbtn">{{i.m_name}}</a>
-          
-          <div class="dropdown-content">
-            {% for j in c_data %}
-            {% if j.m_cat == i%}
-            <a href="products/{{j.pk}}">{{j.c_name}}</a>
-            {% endif %}
-            {% endfor %}
-          </div>
-          
 
-        {% endfor %}
+      <ul class="navbar-nav me-auto">
+        <li class="nav-item" id="dropdown">
+          <a href="" class="nav-link" id="dropbtn">Add</a>
+          <div class="dropdown-content">
+            <a href="../add_prd">Product</a>
+            <a href="../add_Mcatg">category</a>
+
+          </div>
+        </li> 
+        <li class="nav-item" id="dropdown">
+          <a href="" class="nav-link" id="dropbtn">products
+          </a>
+          <div class="dropdown-content">
+            <a href="../view_prdts">Product</a>
+            <!-- <a href="">category</a> -->
+          </div>
+        </li> 
+        <li class="nav-item" id="dropdown">
+          <a href="" class="nav-link" id="dropbtn">Orders
+          </a>
+      
+        </li>  
 
       </ul>
-
-
+<!-- 
+      <div class="collapse navbar-collapse" id="mynavbar">
+   
+      </div> -->
       <form class="d-flex">
         <input class="form-control me-2" type="text" placeholder="Search">
         <button class="btn btn-primary" type="button">Search</button>
@@ -50,12 +58,15 @@
           <li class="nav-item">
             <a class="nav-link" href="m_login"><i class="fa-solid fa-user"></i></a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" href="view_cart"><i class="fa-solid fa-cart-shopping"></i></a>
+
+          <li class="nav-item" >
+            <a class="nav-link" href="admin_logout">Logout</i></a>
           </li>
           
         </ul>
       </form>
+      
+   
 
     </div>  
   </div>

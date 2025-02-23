@@ -191,6 +191,9 @@ def search(req):
 def homep(req):
     return redirect(user_home)
 
+def a_home(req):
+    return redirect(admin_home)
+
 def int_plt(req):
     data=Plants.objects.all()[::-1]
     return render(req,'user/p_1.html',{'Plants':data})
@@ -247,13 +250,14 @@ def search(req):
     return render(req, 'user/search.html', {'data': data,'m_data':m_data,'c_data':c_data})
 
 def add_to_cart(req,pid):
+
     if 'user' in req.session:
         prdct=Plants.objects.get(pk=pid)
         user=User.objects.get(username=req.session['user'])
 
         try:
 
-            data=Cart.objects.create(user=user,Plants=prdct)
+            data=Cart.objects.get(user=user,Plants=prdct)
             data.qty+=1
             data.price=data.Plants.offer_price*data.qty
             data.save()
@@ -325,66 +329,53 @@ def cartDecrement(req,pid):
 
     
 def add_Mcatg(req):
+    if 'admin' in req.session:
+        if req.method=='POST':
+            if 'main_form' in req.POST:
+                name=req.POST['m_name']
+                data=Main_cat.objects.create(m_name=name)
+                data.save()
+                # return redirect(add_Mcatg)
+            elif 'catg_form' in req.POST:
+                m_ctg=req.POST['m_ctg']
+                name=req.POST['it_ctg']
+                # main_cat = Main_cat.objects.get(m_name=m_ctg)
+                data2 = Category.objects.create(m_cat=Main_cat.objects.get(m_name=m_ctg), c_name=name)
+                data2.save()
+            return redirect(add_Mcatg)
+        else:
+            data=Category.objects.all()
+            data1=Main_cat.objects.all()
+            return render(req,'admin/add_Mcatg.html',{'Category':data,'Main_cat':data1})
+    else:
+        return redirect(m_login)
+
+def edit_Mcatg(req,pid):
+    data=Main_cat.objects.get(pk=pid)
     if req.method=='POST':
-        if 'main_form' in req.POST:
-            name=req.POST['m_name']
-            data=Main_cat.objects.create(m_name=name)
-            data.save()
-            # return redirect(add_Mcatg)
-        elif 'catg_form' in req.POST:
-            m_ctg=req.POST['m_ctg']
-            name=req.POST['it_ctg']
-            # main_cat = Main_cat.objects.get(m_name=m_ctg)
-            data2 = Category.objects.create(m_cat=Main_cat.objects.get(m_name=m_ctg), c_name=name)
-            data2.save()
+        name=req.POST['m_name']
+        data=Main_cat.objects.filter(pk=pid).update(m_name=name)
         return redirect(add_Mcatg)
     else:
-        data=Category.objects.all()
-        data1=Main_cat.objects.all()
-        return render(req,'admin/add_Mcatg.html',{'Category':data,'Main_cat':data1})
-    # else:
-    #     return redirect(m_login)
-    
-# def add_catg(req):
-#     data2=Category.objects.all()
+        return render(req,'admin/editmcatg.html',{'data':data})
 
-#     if req.method=='POST':
-#         prd_c=req.POST['prd_c']
-#         name=req.POST['c_name']
-#         data=Category.objects.create(m_cat=Main_cat.objects.get(m_name=prd_c),c_name=name)
-#         main_cat = Main_cat.objects.get(m_name=prd_c)
-#         data = Category.objects.create(m_cat=main_cat, c_name=name)
-#         data.save()
-#         return render(req,'admin/add_catg.html',{'data':data,'data2':data2})
-#     else:
-#         data1=Main_cat.objects.all()
-#         return render(req,'admin/add_catg.html',{'Main_cat':data1})
+def delete_Mcatg(req,pid):
+    data=Main_cat.objects.get(pk=pid)
+    data.delete()
+    return redirect(add_Mcatg)
 
-# def catg(req):
-#     if req.method=='POST':
-#         name=req.POST['m_name']
-#         data=Main_cat.objects.create(m_name=name)
-#         data.save()
-#         return redirect(add_Mcatg)
-#     else:
-#         data=Category.objects.all()
-#         data1=Main_cat.objects.all()
-#         return render(req,'admin/add_Mcatg.html',{'Category':data,'Main_cat':data1})
-    
-# def add_catg(req):
-#     data2=Category.objects.all()
-
-#     if req.method=='POST':
-#         prd_c=req.POST['prd_c']
-#         name=req.POST['c_name']
-#         # data=Category.objects.create(m_cat=Main_cat.objects.get(m_name=prd_c),c_name=name)
-#         main_cat = Main_cat.objects.get(m_name=prd_c)
-#         data = Category.objects.create(m_cat=main_cat, c_name=name)
-#         data.save()
-#         return render(req,'admin/add_catg.html',{'data':data,'data2':data2})
-#     else:
-#         data1=Main_cat.objects.all()
-#         return render(req,'admin/add_catg.html',{'Main_cat':data1})
+def edit_catg(req,pid):
+    data=Category.objects.get(pk=pid)
+    if req.method=='POST':
+        name=req.POST['c_name']
+        data=Category.objects.filter(pk=pid).update(c_name=name)
+        return redirect(add_Mcatg)
+    else:
+        return render(req,'admin/editcatg.html',{'data':data})
+def delete_catg(req,pid):
+    data=Category.objects.get(pk=pid)
+    data.delete()
+    return redirect(add_Mcatg)
 
 def buy(req,pid):
     if 'user' in req.session:
@@ -443,7 +434,7 @@ def change_pswd(req):
                     user.set_password(new_password)
                     user.save()
                     messages.success(req,"Password changed successfully")
-                    return redirect(change_pswd)
+                    return redirect(user_logout)
                 else:
                     messages.warning(req,"Old password is incorrect")
                     return redirect(change_pswd)
@@ -454,6 +445,18 @@ def change_pswd(req):
             return render(req,'user/change_pswd.html')
     else:
         return redirect(m_login)
+
+def mcatgall(req, pid):
+    # Retrieve the Main_cat object using the provided id
+    main_cat = Main_cat.objects.get(id=pid)
+    
+    # Retrieve all plants that belong to this Main_cat
+    plants = Plants.objects.filter(mcatg=main_cat)
+    
+    # Pass the plants and main_cat to the template
+    return render(req, 'user/mcatgall.html', {'plants': plants, 'main_cat': main_cat})
+
+
 
 # -------------admin---------
 

@@ -14,9 +14,11 @@
 <body>
 
 
-  <nav class="navbar navbar-expand-sm " id="navb">
+<!-- ---------navbar---------- -->
+
+<nav class="navbar navbar-expand-sm " id="navb">
     <div class="container-fluid">
-      <a class="navbar-brand" href="../a_home">ROOTED</a>
+      <a class="navbar-brand" href="a_home">ROOTED</a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#collapsibleNavbar">
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -71,30 +73,63 @@
     </div>
   </nav>
 
+<!-- -----------end------------- -->
 
-  <!-- -----------end-------------   -->
-    <div class="container" style="margin-top: 50px;" >
-      
-        <div class="row" id="pp">
-          {% for plant in data %}
-      
-          <div class="col-lg-3" id="oo">
-      
-            <a href="" style="text-decoration: none; color: black;"><div class="card" style="margin-top: 20px;">
-              <img class="card-img-top" src="{{plant.img.url}}" alt="Card image" style="width:100%; height: 300px;">
-              <div class="card-body">
-                <h4 class="card-title"><i class="fa-solid fa-indian-rupee-sign"></i>{{plant.price}}</h4>
-                <p class="card-text">{{plant.dis}}</p>
-                <a href="delete_prd/{{plant.pk}}" class="btn" style="background-color: #ca9f29; color: white;"> Delete</a>
-                <a href="update_prd/{{plant.pk}}" class="btn" style="background-color: #2961c7; color: white;"> Update</a>
-              </div></a>
+
+
+
+<div class="container">
+    <h2 class="my-4 text-center">Edit Category:</h2>
+    
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-md-6 offset-md-3">
+                <!-- Display form errors if any -->
+                {% if form.errors %}
+                    <div class="alert alert-danger">
+                        <ul>
+                            {% for field in form %}
+                                {% for error in field.errors %}
+                                    <li>{{ error }}</li>
+                                {% endfor %}
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
+                
+                <div class="card">
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label for="id_m_name">New Name</label>
+                            <input type="text" class="form-control" id="id_m_name" name="c_name" value="{{ form.m_name.value }}" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="id_description">Current Name</label>
+                            <textarea class="form-control" id="id_description" name="description">{{ data.c_name}}</textarea>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-block my-3">Save Changes</button>
+                    </div>
+                </div>
             </div>
-      
-          </div>
-          {% endfor %}
-      
-        </div>  
-      </div>
-      
+        </div>
+    </form>
+
+    <div class="text-center my-4">
+        <a href="../add_Mcatg" class="btn btn-secondary">Cancel</a>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
 </body>
 </html>
