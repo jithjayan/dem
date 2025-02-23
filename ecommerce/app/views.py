@@ -325,7 +325,6 @@ def cartDecrement(req,pid):
 
     
 def add_Mcatg(req):
-
     if req.method=='POST':
         if 'main_form' in req.POST:
             name=req.POST['m_name']
@@ -471,11 +470,11 @@ def add_prd(req):
             stock=req.POST['stock']
             img= req.FILES['img']
             img2=req.FILES['img2']
-            prd_cate=req.POST.get['prd_cate']
-            prd_cate2=req.POST['prd_cate2']
-            # cat= Category.objects.get(c_name=prd_cate)
-            # main_cat = Main_cat.objects.get(m_name=prd_cate2)
-            data=Plants.objects.create(p_id=p_id,name=name,p_catg=p_catg,p_dis=p_dis,price=price,offer_price=offer_price,stock=stock,img=img,img2=img2,catg=prd_cate,mcatg=prd_cate2)
+            prd_cate=req.POST.get('prd_cate')
+            prd_cate2=req.POST.get('prd_cate2')
+            cat= Category.objects.get(c_name=prd_cate)
+            main_cat = Main_cat.objects.get(m_name=prd_cate2)
+            data=Plants.objects.create(p_id=p_id,name=name,p_catg=p_catg,p_dis=p_dis,price=price,offer_price=offer_price,stock=stock,img=img,img2=img2,catg=cat,mcatg=main_cat)
             data.save()
             return redirect(add_prd)
         else:
@@ -508,8 +507,8 @@ def update_prd(req,pid):
         price=req.POST['price']
         offer_price=req.POST['offer_price']
         stock=req.POST['stock']
-        img= req.FILES['img']
-        img2=req.FILES['img2']
+        img= req.FILES.get('img')
+        img2=req.FILES.get('img2')
         if img:
             data=Plants.objects.filter(pk=pid).update(p_id=p_id,name=name,p_catg=p_catg,p_dis=p_dis,price=price,offer_price=offer_price,stock=stock,img=img)
         elif img2:

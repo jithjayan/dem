@@ -125,34 +125,11 @@
         <label for="prd_cate" class="form-label">Product Category:</label>
         <select name="prd_cate" id="" >
           {% for j in data1 %}
-            <option value="{{i.c_name}}">{{j.c_name}}</option>
+            <option value="{{j.c_name}}">{{j.c_name}}</option>
           {% endfor %}
           </select>          
     </div>
-
-
-<!-- -----------end------------- -->
-<!-- 
-    <div class="mb-2">
-      <label for="prd_cate2" class="form-label">Pro Main catg:</label>
-      <select name="prd_cate2" id="" >
-        {% for i in data2 %}
-          <option value="{{i.m_name}}">{{i.m_name}}</option>
-        {% endfor %}
-        </select>          
-
-
-    <div class="mb-2">
-      <label for="prd_cate" class="form-label">Product Category:</label>
-      <select name="prd_cate" id="" >
-      
-        {% for j in data1 %}
-          <option value="{{i.c_name}}">{{j.c_name}}</option>
-        {% endfor %}
-        </select>         
-  </div> -->
-
-
+    
       <button type="submit" class="btn btn-primary">Submit</button>
     </form>
   </div>
