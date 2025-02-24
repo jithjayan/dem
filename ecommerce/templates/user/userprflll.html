@@ -16,84 +16,56 @@
 <body class="userpbody" style="background-color: #bee6c0;">
     <!-- ---------navbar---------- -->
 
-<nav class="navbar navbar-expand-sm " id="navb">
-    <div class="container-fluid">
-      <a class="navbar-brand" href="homep">ROOTED</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#collapsibleNavbar">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="collapsibleNavbar">
-        <ul class="navbar-nav me-auto">
-          <li class="nav-item" id="dropdown">
-            <a href="" class="nav-link" id="dropbtn"> plants
-            </a>
-            <div class="dropdown-content">
-              <a href="int_plt">Indoor Plants</a>
-              <a href="#">Flowering Plants</a>
-              <a href="#">Low Maintains Plants</a>
-              <a href="#">Air Purifying Plants</a>
-              <a href="#">Low Light Plants</a>
-              <a href="#">Cacti & Succulents Plants</a>
-              <a href="#">Hanging Plants</a>
-              <a href="#">Fruit Plants</a>
-              <a href="#">Bundle Plants</a>
-              <a href="#">Others</a>
-  
-            </div>
-          </li> 
-          <li class="nav-item" id="dropdown">
-            <a href="" class="nav-link" id="dropbtn">Seeds
-            </a>
-            <div class="dropdown-content">
-              <a href="#">Flower Seeds</a>
-              <a href="#">Vegetable Seeds</a>
-              <a href="#">Flower Bulbs</a>
-              <a href="#">Fruit Seeds</a>
-              <a href="#">Others</a>
-            </div>
-          </li> 
-          <li class="nav-item" id="dropdown">
-            <a href="" class="nav-link" id="dropbtn"> Planters & Accessories
-            </a>
-            <div class="dropdown-content">
-              <a href="#">Plastic Pots</a>
-              <a href="#">Ceramic Pots</a>
-              <a href="#">Metalic Planters</a>
-              <a href="#">Wooden Planters</a>
-              <a href="#">Hanging Planters</a>
-              <a href="#">Plant Stands</a>
-              <a href="#">Others</a>
-            </div>
-          </li>  
-          <li class="nav-item" >
-            <a href="" class="nav-link" id="dropbtn"> Fertilizers
-            </a>
-          </li> 
-        </ul>
-  <!-- 
-        <div class="collapse navbar-collapse" id="mynavbar">
-     
-        </div> -->
-        <form class="d-flex">
-          <input class="form-control me-2" type="text" placeholder="Search">
-          <button class="btn btn-primary" type="button">Search</button>
+    <nav class="navbar navbar-expand-sm " id="navb">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="homep">ROOTED</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#collapsibleNavbar">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="collapsibleNavbar">
+          
+          
           <ul class="navbar-nav me-auto">
-            <li class="nav-item">
-              <a class="nav-link" href="m_login"><i class="fa-solid fa-user"></i></a>
-            </li>
-            <li class="nav-item" >
-              <a class="nav-link" href=""><i class="fa-solid fa-cart-shopping"></i></a>
-            </li>
+            {% for i in m_data%}
+            <li class="nav-item" id="dropdown">
+              <a href="" class="nav-link" id="dropbtn">{{i.m_name}}</a>
+              
+              <div class="dropdown-content">
+                {% for j in c_data %}
+                {% if j.m_cat == i%}
+                <a href="products/{{j.pk}}">{{j.c_name}}</a>
+                {% endif %}
+                {% endfor %}
+                <a href="./mcatgall/{{i.pk}}">All</a>
+              </div>
+              
+    
+            {% endfor %}
     
           </ul>
-        </form>
-        
-     
-  
-      </div>  
-    </div>
-  </nav>
-  <!-- ---------------navbarend------------- -->
+    
+          
+          <form class="d-flex" method="GET" action="../search">
+            {% csrf_token %}
+            <input class="form-control me-2" type="text" placeholder="Search" value="{{ srch }}" name="query">
+            <button class="btn btn-primary" type="submit" >Search</button>
+            <ul class="navbar-nav me-auto">
+              <li class="nav-item">
+                <a class="nav-link" href="m_login"><i class="fa-solid fa-user"></i></a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="view_cart"><i class="fa-solid fa-cart-shopping"></i></a>
+              </li>
+              
+            </ul>
+          </form>
+    
+        </div>  
+      </div>
+    </nav>
+    
+    <!-- -----------end------------- -->
+    
   
 
 

@@ -45,7 +45,7 @@ urlpatterns=[
     path('search',views.search),
     path('change_pswd',views.change_pswd),
     path('mcatgall/<pid>',views.mcatgall),
-
+    path('payment',views.payment),
     # path('view_category',views.view_category),
  
 

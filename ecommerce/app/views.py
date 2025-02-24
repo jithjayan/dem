@@ -386,7 +386,20 @@ def buy(req,pid):
     else:
         return redirect(m_login)
 
-
+def payment(req):
+    if 'user' in req.session:
+        user=User.objects.get(username=req.session['user'])
+        if req.method=='POST':
+            user=User.objects.get(username=req.session['user'])
+            prdt=Plants.objects.get(pk=req.POST['pid'])
+            adrs=Address.objects.get(pk=req.POST['adrs'])
+            data=Buy.objects.create(user=user,product=prdt,address=adrs)
+            data.save()
+            prdt.stock-=1
+            prdt.save()
+            return redirect(user_home)
+        else:
+            return redirect(user_home)
 
 
 
@@ -539,12 +552,10 @@ def delete_prd(req,pid):
 
 
 def products(req,pid):
-    if 'user' in req.session:
-        data=Plants.objects.filter(catg=pid)
-        c_data=Category.objects.all()
-        return render(req,'user/products.html',{'data':data,'c_data':c_data})
-    else:
-        return redirect(m_login)
+    data=Plants.objects.filter(catg=pid)
+    c_data=Category.objects.all()
+    return render(req,'user/products.html',{'data':data,'c_data':c_data})
+ 
 
 
 

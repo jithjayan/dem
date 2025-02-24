@@ -27,7 +27,7 @@
         <h2>LOGIN</h2>
         <form action="" method="POST">
             {% csrf_token %}
-            <input type="text" name="username" class="form-input" placeholder="User ID" required>
+            <input type="text" name="username" class="form-input" placeholder="User email" required>
             <input type="password" name="password" class="form-input" placeholder="Password" required>
             <!-- <input type="submit" value="Login" class="login-button"> -->
             <button type="submit" class="login-button" value="login">Login</button>

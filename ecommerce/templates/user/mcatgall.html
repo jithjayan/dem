@@ -109,6 +109,56 @@
 </head>
 <body>
 
+    <nav class="navbar navbar-expand-sm " id="navb">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="homep">ROOTED</a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#collapsibleNavbar">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="collapsibleNavbar">
+            
+            
+            <ul class="navbar-nav me-auto">
+              {% for i in m_data%}
+              <li class="nav-item" id="dropdown">
+                <a href="" class="nav-link" id="dropbtn">{{i.m_name}}</a>
+                
+                <div class="dropdown-content">
+                  {% for j in c_data %}
+                  {% if j.m_cat == i%}
+                  <a href="products/{{j.pk}}">{{j.c_name}}</a>
+                  {% endif %}
+                  {% endfor %}
+                  <a href="./mcatgall/{{i.pk}}">All</a>
+                </div>
+                
+      
+              {% endfor %}
+      
+            </ul>
+      
+            
+            <form class="d-flex" method="GET" action="../search">
+              {% csrf_token %}
+              <input class="form-control me-2" type="text" placeholder="Search" value="{{ srch }}" name="query">
+              <button class="btn btn-primary" type="submit" >Search</button>
+              <ul class="navbar-nav me-auto">
+                <li class="nav-item">
+                  <a class="nav-link" href="m_login"><i class="fa-solid fa-user"></i></a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="view_cart"><i class="fa-solid fa-cart-shopping"></i></a>
+                </li>
+                
+              </ul>
+            </form>
+      
+          </div>  
+        </div>
+      </nav>
+      
+      <!-- -----------end------------- -->
+      
     <!-- Header Section -->
     <header>
         <h1>Plants in Main Category</h1>

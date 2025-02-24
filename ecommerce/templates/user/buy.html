@@ -90,7 +90,56 @@
 }
 </style>
 <body>
-
+  <nav class="navbar navbar-expand-sm " id="navb">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="homep">ROOTED</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#collapsibleNavbar">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="collapsibleNavbar">
+        
+        
+        <ul class="navbar-nav me-auto">
+          {% for i in m_data%}
+          <li class="nav-item" id="dropdown">
+            <a href="" class="nav-link" id="dropbtn">{{i.m_name}}</a>
+            
+            <div class="dropdown-content">
+              {% for j in c_data %}
+              {% if j.m_cat == i%}
+              <a href="products/{{j.pk}}">{{j.c_name}}</a>
+              {% endif %}
+              {% endfor %}
+              <a href="./mcatgall/{{i.pk}}">All</a>
+            </div>
+            
+  
+          {% endfor %}
+  
+        </ul>
+  
+        
+        <form class="d-flex" method="GET" action="../search">
+          {% csrf_token %}
+          <input class="form-control me-2" type="text" placeholder="Search" value="{{ srch }}" name="query">
+          <button class="btn btn-primary" type="submit" >Search</button>
+          <ul class="navbar-nav me-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="m_login"><i class="fa-solid fa-user"></i></a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="view_cart"><i class="fa-solid fa-cart-shopping"></i></a>
+            </li>
+            
+          </ul>
+        </form>
+  
+      </div>  
+    </div>
+  </nav>
+  
+  <!-- -----------end------------- -->
+  
     <!-- <div class="container" >
         <div class="row" style="border: 2px solid black;">
           <div class="col-lg-3" style=" width: 30%px; ">
@@ -133,28 +182,27 @@
       <div class="container os">
         <div class="row">
           <div class="col-lg-4">
-            <img src="{{prod.product.img.url}}" alt="">
-            <h3 class="name">{{prod.product.name}}</h3>
+            <img src="{{prdt.img.url}}" alt="">
+            <h3 class="name">{{prdt.name}}</h3>
   </div>
   <div class="col-lg-8">
     <form class="addressForm" action="" method="post" enctype="multipart/form-data">
       {% csrf_token %}
       <label for="">Shipping address : </label><br>
-      <select name="address" id="address">
+      <select name="adrs" id="address">
         {% for i in data %}
-        <option value="{{i.pk}}">{{i.name}},{{i.house}},{{i.street}},{{i.pin}},{{i.state}}</option>
+        <option value="{{i.pk}}">{{i.name}},{{i.phn}},{{i.adrs}},{{i.pin}},{{i.state}}</option>
         {% endfor %}
       </select><br>
-      <a href="../../../adrs">Add new address + </a>
+      <a href="../adrs">Add new address + </a>
       <div class="row row2">
         <div class="col-lg-6">
           <h3>Total amount payable : </h3>
         </div>
         <div class="col-lg-6">
-          <h3 class="offerPrice">{{prod.offerr_price}}</h3>
+          <h3 class="offerPrice">{{prdt.offer_price}}</h3>
         </div>
       </div>
-  
 
       <button type="submit" class="btn">CONFIRM</button>
     </form>

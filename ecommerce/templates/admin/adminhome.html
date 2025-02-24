@@ -6,91 +6,163 @@
     <title>Document</title>
     {% load static %}
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
-
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <link rel="stylesheet" href="{% static 'css/style.css'%}">
+    
+    <style>
+        /* Global Styles */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+        }
+        
+        /* Navbar Styles */
+        #navb {
+            background: linear-gradient(45deg, #e4dabb, #3399ff);
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar-brand {
+            color: #0a0a0a;
+            font-weight: bold;
+            font-size: 1.8rem;
+            font-family: myfnt;
+        }
+
+        .navbar-nav .nav-item .nav-link {
+            color: #fff !important;
+            font-size: 1.1rem;
+            padding: 12px 20px;
+            font-family: myfnt;
+        }
+
+        .navbar-nav .nav-item:hover .nav-link {
+            background-color: #005bb5;
+            border-radius: 5px;
+        }
+
+        #dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        /* Dropdown Menu Styles */
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f8f9fa;
+            min-width: 160px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            padding: 10px;
+        }
+
+        .dropdown-content a {
+            color: #333;
+            padding: 8px 12px;
+            text-decoration: none;
+            display: block;
+        }
+
+        .dropdown-content a:hover {
+            background-color: #007bff;
+            color: white;
+            border-radius: 5px;
+        }
+
+        /* Search Bar Styling */
+        .d-flex {
+            display: flex;
+            align-items: center;
+        }
+
+        .form-control {
+            border-radius: 20px;
+            padding: 10px 15px;
+            width: 250px;
+        }
+
+        .btn-primary {
+            background-color: #0066cc;
+            border: none;
+            border-radius: 20px;
+            padding: 10px 20px;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            background-color: #005bb5;
+        }
+
+        /* Icon and Links */
+        .fa-user {
+            font-size: 1.5rem;
+        }
+
+        .nav-link {
+            font-weight: bold;
+        }
+
+        /* Custom Styling for Mobile Responsiveness */
+        @media (max-width: 768px) {
+            .navbar-brand {
+                font-size: 1.4rem;
+            }
+            .form-control {
+                width: 200px;
+            }
+        }
+    </style>
+
 </head>
 <body>
 
-
 <!-- ---------navbar---------- -->
-
-<nav class="navbar navbar-expand-sm " id="navb">
+<nav class="navbar navbar-expand-sm" id="navb">
     <div class="container-fluid">
-      <a class="navbar-brand" href="homep">ROOTED</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#collapsibleNavbar">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="collapsibleNavbar">
+        <a class="navbar-brand" href="homep">ROOTED</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#collapsibleNavbar">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="collapsibleNavbar">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item" id="dropdown">
+                    <a href="#" class="nav-link" id="dropbtn">Add</a>
+                    <div class="dropdown-content">
+                        <a href="../add_prd">Product</a>
+                        <a href="../add_Mcatg">Category</a>
+                    </div>
+                </li> 
+                <li class="nav-item" id="dropdown">
+                    <a href="#" class="nav-link" id="dropbtn">Products</a>
+                    <div class="dropdown-content">
+                        <a href="../view_prdts">View Products</a>
+                    </div>
+                </li> 
+                <li class="nav-item" id="dropdown">
+                    <a href="#" class="nav-link" id="dropbtn">Orders</a>
+                </li>  
+            </ul>
 
-        <ul class="navbar-nav me-auto">
-          <li class="nav-item" id="dropdown">
-            <a href="" class="nav-link" id="dropbtn">Add</a>
-            <div class="dropdown-content">
-              <a href="../add_prd">Product</a>
-              <a href="../add_Mcatg">category</a>
-
-            </div>
-          </li> 
-          <li class="nav-item" id="dropdown">
-            <a href="" class="nav-link" id="dropbtn">products
-            </a>
-            <div class="dropdown-content">
-              <a href="../view_prdts">Product</a>
-              <!-- <a href="">category</a> -->
-            </div>
-          </li> 
-          <li class="nav-item" id="dropdown">
-            <a href="" class="nav-link" id="dropbtn">Orders
-            </a>
-        
-          </li>  
-
-        </ul>
-<!-- 
-        <div class="collapse navbar-collapse" id="mynavbar">
-     
-        </div> -->
-        <form class="d-flex">
-          <input class="form-control me-2" type="text" placeholder="Search">
-          <button class="btn btn-primary" type="button">Search</button>
-          <ul class="navbar-nav me-auto">
-            <li class="nav-item">
-              <a class="nav-link" href="m_login"><i class="fa-solid fa-user"></i></a>
-            </li>
-
-            <li class="nav-item" >
-              <a class="nav-link" href="admin_logout">Logout</i></a>
-            </li>
-            
-          </ul>
-        </form>
-        
-     
-
-      </div>  
+            <form class="d-flex">
+                <input class="form-control me-2" type="text" placeholder="Search">
+                <button class="btn btn-primary" type="button">Search</button>
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <!-- <a class="nav-link" href="m_login"><i class="fa-solid fa-user"></i></a> -->
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="admin_logout">Logout</a>
+                    </li>
+                </ul>
+            </form>
+        </div>  
     </div>
-  </nav>
+</nav>
 
 <!-- -----------end------------- -->
-
-
-
-    
-  <!-- -----------end------------- -->
-  
-
-
-<!-- -----------------cntd---------------- -->
-
-
-
-
-
-
-
-
 
 
 </body>

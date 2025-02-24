@@ -73,7 +73,7 @@
 </nav>
 
 <!-- -----------end------------- -->
-
+  <div class="container" style="display: flex; justify-content: center; align-items: center; ">
     <form action="" method="POST" enctype="multipart/form-data" style="margin-top: 40px;">
         {% csrf_token %}
     <div class="mb-3">
@@ -125,7 +125,8 @@
         <label for="prd_cate" class="form-label">Product Category:</label>
         <select name="prd_cate" id="" >
           {% for j in data1 %}
-            <option value="{{j.c_name}}">{{j.c_name}}</option>
+            <option value="{{j.c_name}}">{{j.c_name}} ({{j.m_cat}})</option>
+            
           {% endfor %}
           </select>          
     </div>
@@ -135,7 +136,7 @@
   </div>
 
 
-
+</div>
 
   
 </body>
