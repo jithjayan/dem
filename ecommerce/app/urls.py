@@ -49,6 +49,5 @@ urlpatterns=[
     path('manage_orders/', views.manage_orders,name='manage_orders'),
     path('cart_buy', views.cart_buy, name='cart_buy'),
     # path('view_category',views.view_category),
- 
 
 ]

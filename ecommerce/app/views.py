@@ -7,9 +7,11 @@ import razorpay
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.core.mail import send_mail
+from django.http import HttpResponse
 from django.conf import settings
 from django.db.models import Q
 from django.utils.crypto import get_random_string
+from django.views.decorators.csrf import csrf_exempt
 
 # Create your views here.
 
@@ -431,6 +433,36 @@ def buy(req, pid):
         return render(req, 'user/buy.html', context)
     else:
         return redirect('m_login')
+    
+
+def cart_buy(req):
+    if 'user' in req.session:
+        user = User.objects.get(username=req.session['user'])
+        cart = Cart.objects.filter(user=user)
+        data = Address.objects.filter(user=user)
+        return render(req, 'user/cart_buy.html')
+
+    return redirect(m_login)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 def manage_orders(req):
     if req.user.is_authenticated and req.user.is_staff:
@@ -520,7 +552,7 @@ def change_pswd(req):
             return render(req,'user/change_pswd.html')
     else:
         return redirect(m_login)
-
+    
 def mcatgall(req, pid):
     # Retrieve the Main_cat object using the provided id
     main_cat = Main_cat.objects.get(id=pid)
@@ -620,53 +652,5 @@ def products(req,pid):
  
 
 
-def cart_buy(request):
-    if 'user' in request.session:
-        user = request.user
-        
-        # Get all cart items for the user
-        cart_items = Cart.objects.filter(user=user)
-        
-        if not cart_items:
-            return redirect('cart')  # Redirect if cart is empty
-        
-        # Calculate total price for the cart items
-        total = sum([item.price * item.qty for item in cart_items])
-        
-        if request.method == 'POST':
-            # Retrieve address details from POST data (you can create a form for this)
-            address_data = {
-                'name': request.POST.get('name'),
-                'phn': request.POST.get('phn'),
-                'pin': request.POST.get('pin'),
-                'loc': request.POST.get('loc'),
-                'adrs': request.POST.get('adrs'),
-                'city': request.POST.get('city'),
-                'state': request.POST.get('state'),
-            }
-            
-            # Save the user's address
-            address = Address.objects.create(user=user, **address_data)
-            
-            # Create Buy order(s) based on the cart items
-            for item in cart_items:
-                buy = Buy.objects.create(
-                    user=user,
-                    product=item.Plants,
-                    address=address,
-                    qnty=item.qty,
-                    status='Pending',  # Default status
-                    price=item.price,
-                )
-            
-            # Optionally, you can clear the cart after checkout
-            cart_items.delete()
-            
-            # Redirect to a confirmation or order details page
-            return redirect('order_confirmation')
-        
-        return render(request, 'user/cart_buy.html', {'cart_items': cart_items, 'total': total})
-    else:
-        return redirect(m_login)
 
 
