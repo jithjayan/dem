@@ -131,3 +131,9 @@ EMAIL_USE_TLS = True
 EMAIL_PORT = 587
 EMAIL_HOST_USER = 'rooted.plants50@gmail.com'
 EMAIL_HOST_PASSWORD = 'ncqzrofpqsvqvtpj'
+
+
+RAZORPAY_KEY_ID = "rzp_test_v0rhMg9zDU9Rh8"
+RAZORPAY_KEY_SECRET = "WSIBIMB4HqgwYQDPv5KfOd4g"
+# In settings.py
+RAZORPAY_MODE = "TEST" 

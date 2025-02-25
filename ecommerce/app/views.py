@@ -1,7 +1,9 @@
-from django.shortcuts import render,redirect
+from django.shortcuts import render,redirect,get_object_or_404
 from django.contrib.auth import authenticate,login,logout
 from .models import *
 import os
+from django.contrib.auth.decorators import login_required
+import razorpay
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.core.mail import send_mail
@@ -377,21 +379,82 @@ def delete_catg(req,pid):
     data.delete()
     return redirect(add_Mcatg)
 
-def buy(req,pid):
-    if 'user' in req.session:
-        user=User.objects.get(username=req.session['user'])
-        prdt=Plants.objects.get(pk=pid)
-        data=Address.objects.filter(user=user)
-        return render(req,'user/buy.html',{'data':data,'prdt':prdt})
-    else:
-        return redirect(m_login)
 
-def payment(req):
+# def buy(req,pid):
+#     if 'user' in req.session:
+#         user=User.objects.get(username=req.session['user'])
+#         prdt=Plants.objects.get(pk=pid)
+#         data=Address.objects.filter(user=user)
+#         return render(req,'user/buy.html',{'data':data,'prdt':prdt})
+#     else:
+#         return redirect(m_login)
+
+def buy(req, pid):
+    if 'user' in req.session:
+        user = User.objects.get(username=req.session['user'])
+        prdt = Plants.objects.get(pk=pid)
+        data = Address.objects.filter(user=user)
+
+        # Step 1: Create a Razorpay Order
+        client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
+        
+        # Assuming the price is in INR
+        amount = prdt.offer_price * 100  # Razorpay expects the amount in paise (cents)
+
+        # Create order in Razorpay
+        order_data = {
+            'amount': amount,  # Amount in paise
+            'currency': 'INR',
+            'payment_capture': '1'  # Auto-capture payment
+        }
+
+        razorpay_order = client.order.create(data=order_data)
+        
+        # Step 2: Save the Razorpay order ID to the database
+        buy_instance = Buy.objects.create(
+            user=user,
+            product=prdt,
+            address=data[0],  # Assuming first address for simplicity
+            qnty=1
+        )
+        buy_instance.razorpay_order_id = razorpay_order['id']
+        buy_instance.save()
+
+        # Step 3: Render the payment page with the order details
+        context = {
+            'data': data,
+            'prdt': prdt,
+            'razorpay_order_id': razorpay_order['id'],
+            'razorpay_key': settings.RAZORPAY_KEY_ID,
+            'razorpay_amount': amount,
+        }
+        return render(req, 'user/buy.html', context)
+    else:
+        return redirect('m_login')
+
+def manage_orders(req):
+    if req.user.is_authenticated and req.user.is_staff:
+        orders = Buy.objects.all()
+        
+        if req.method == 'POST':
+            order_id = req.POST.get('order_id')
+            new_status = req.POST.get('status')
+            order = Buy.objects.get(id=order_id)
+            order.status = new_status
+            order.save()
+            return redirect('manage_orders')  # Correct the redirect to 'manage_orders' after status update
+        
+        return render(req, 'admin/manage_orders.html', {'orders': orders})
+    else:
+        return redirect('m_login') 
+
+
+def payment(req,pid):
     if 'user' in req.session:
         user=User.objects.get(username=req.session['user'])
         if req.method=='POST':
             user=User.objects.get(username=req.session['user'])
-            prdt=Plants.objects.get(pk=req.POST['pid'])
+            prdt=Plants.objects.get(pk=pid)
             adrs=Address.objects.get(pk=req.POST['adrs'])
             data=Buy.objects.create(user=user,product=prdt,address=adrs)
             data.save()
@@ -402,8 +465,7 @@ def payment(req):
             return redirect(user_home)
 
 
-
-
+# -----------------------------end------------------------
 def addrs(req):
     if 'user' in req.session:
         user=User.objects.get(username=req.session['user'])
@@ -558,7 +620,53 @@ def products(req,pid):
  
 
 
-
-
+def cart_buy(request):
+    if 'user' in request.session:
+        user = request.user
+        
+        # Get all cart items for the user
+        cart_items = Cart.objects.filter(user=user)
+        
+        if not cart_items:
+            return redirect('cart')  # Redirect if cart is empty
+        
+        # Calculate total price for the cart items
+        total = sum([item.price * item.qty for item in cart_items])
+        
+        if request.method == 'POST':
+            # Retrieve address details from POST data (you can create a form for this)
+            address_data = {
+                'name': request.POST.get('name'),
+                'phn': request.POST.get('phn'),
+                'pin': request.POST.get('pin'),
+                'loc': request.POST.get('loc'),
+                'adrs': request.POST.get('adrs'),
+                'city': request.POST.get('city'),
+                'state': request.POST.get('state'),
+            }
+            
+            # Save the user's address
+            address = Address.objects.create(user=user, **address_data)
+            
+            # Create Buy order(s) based on the cart items
+            for item in cart_items:
+                buy = Buy.objects.create(
+                    user=user,
+                    product=item.Plants,
+                    address=address,
+                    qnty=item.qty,
+                    status='Pending',  # Default status
+                    price=item.price,
+                )
+            
+            # Optionally, you can clear the cart after checkout
+            cart_items.delete()
+            
+            # Redirect to a confirmation or order details page
+            return redirect('order_confirmation')
+        
+        return render(request, 'user/cart_buy.html', {'cart_items': cart_items, 'total': total})
+    else:
+        return redirect(m_login)
 
 

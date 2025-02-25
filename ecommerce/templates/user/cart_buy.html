@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout</title>
+    <link rel="stylesheet" href="path_to_your_css_file.css">
+</head>
+<body>
+    <div class="container">
+        <h2>Proceed to Checkout</h2>
+        
+        <div class="cart-items">
+            {% for item in cart_items %}
+            <div class="cart-item">
+                <img src="{{ item.Plants.img.url }}" alt="{{ item.Plants.name }}">
+                <div class="item-details">
+                    <h4>{{ item.Plants.name }}</h4>
+                    <p class="price">${{ item.Plants.offer_price }}</p>
+                    <p>Quantity: {{ item.qty }}</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <div class="total">
+            <h4>Total: ${{ total }}</h4>
+        </div>
+        
+        <h3>Shipping Address</h3>
+        <form method="POST">
+            {% csrf_token %}
+            <div>
+                <label for="name">Full Name:</label>
+                <input type="text" id="name" name="name" required>
+            </div>
+            <div>
+                <label for="phn">Phone Number:</label>
+                <input type="text" id="phn" name="phn" required>
+            </div>
+            <div>
+                <label for="pin">PIN Code:</label>
+                <input type="text" id="pin" name="pin" required>
+            </div>
+            <div>
+                <label for="loc">Location:</label>
+                <input type="text" id="loc" name="loc" required>
+            </div>
+            <div>
+                <label for="adrs">Address:</label>
+                <textarea id="adrs" name="adrs" required></textarea>
+            </div>
+            <div>
+                <label for="city">City:</label>
+                <input type="text" id="city" name="city" required>
+            </div>
+            <div>
+                <label for="state">State:</label>
+                <input type="text" id="state" name="state" required>
+            </div>
+            
+            <button type="submit" class="btn btn-primary">Place Order</button>
+        </form>
+    </div>
+</body>
+</html>
