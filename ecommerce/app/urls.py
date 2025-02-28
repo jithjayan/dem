@@ -23,11 +23,42 @@ urlpatterns=[
     path('a_home',views.a_home),
     path('add_to_cart/<pid>',views.add_to_cart),
     path('delete_cart/<pid>',views.delete_cart),
-    path('view_cart',views.view_cart),
     path('view_pro/<pid>',views.view_pro),
+    path('buy/<pid>',views.buy),
+    path('orderSummary/<prod>/<data>',views.orderSummary,name="orderSummary"),
+    path('order_payment',views.order_payment),
+    path('callback',views.callback,name="callback"),
+    path('book',views.book,name="book"),
+    path('bookings',views.bookings),
+
+    path('view_cart',views.view_cart),
+    path('buyAll', views.buyAll),
+    path('ordersummary2/<price>/<total>',views.orderSummary2, name="ordersummary2"),
+    path('payment2', views.payment2, name="payment2"),
+    path('callback2', views.callback2, name="callback2"),
+    path('book2', views.book2, name="book2"),
+    path('deleteBookings/<pid>', views.deleteBookings),
+    path('search-suggestions/', views.search_suggestions, name='search_suggestions'),
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     # path('add_catg',views.add_catg),
     path('admin_logout',views.admin_logout),
-    path('buy/<pid>',views.buy),
     path('adrs',views.addrs),
     path('delete_address/<pid>',views.delete_address),
     path('add_prd',views.add_prd),
@@ -47,7 +78,7 @@ urlpatterns=[
     path('mcatgall/<pid>',views.mcatgall),
     path('payment/<pid>',views.payment),
     path('manage_orders/', views.manage_orders,name='manage_orders'),
-    path('cart_buy', views.cart_buy, name='cart_buy'),
+    # path('cart_buy', views.cart_buy, name='cart_buy'),
     # path('view_category',views.view_category),
 
 ]

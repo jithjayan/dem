@@ -184,7 +184,7 @@
                 {% csrf_token %}
                 <label for="">Shipping address : </label><br>
                 <select name="address" id="address">
-                  {% for i in cart_items %}
+                  {% for i in data %}
                   <option value="{{i.pk}}">{{i.name}},{{i.house}},{{i.street}},{{i.pin}},{{i.state}}</option>
                   {% endfor %}
                 </select><br>
@@ -211,70 +211,6 @@
 
 
 
-      
-
-
-      <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-
-      <script type="text/javascript">
-          var options = {
-              "key": "{{ razorpay_merchant_key }}", // Your Razorpay Key ID from settings
-              "amount": "{{ total }}", // Amount in paise
-              "currency": "INR",
-              "name": "Your Shop Name",
-              "description": "Purchase from your cart",
-              "image": "https://example.com/your-logo.png",
-              "order_id": "{{ razorpay_order_id }}", // Generated Razorpay order ID
-              "handler": function (response) {
-                  // On successful payment, handle the response here
-                  var payment_id = response.razorpay_payment_id;
-                  var order_id = response.razorpay_order_id;
-                  var signature = response.razorpay_signature;
-      
-                  // Call your backend to verify payment and complete the order
-                  var form = document.createElement("form");
-                  form.method = "POST";
-                  form.action = "{% url 'verify_payment' %}"; // Create a view for payment verification
-                  var paymentInput = document.createElement("input");
-                  paymentInput.type = "hidden";
-                  paymentInput.name = "payment_id";
-                  paymentInput.value = payment_id;
-                  form.appendChild(paymentInput);
-      
-                  var orderInput = document.createElement("input");
-                  orderInput.type = "hidden";
-                  orderInput.name = "order_id";
-                  orderInput.value = order_id;
-                  form.appendChild(orderInput);
-      
-                  var signatureInput = document.createElement("input");
-                  signatureInput.type = "hidden";
-                  signatureInput.name = "razorpay_signature";
-                  signatureInput.value = signature;
-                  form.appendChild(signatureInput);
-      
-                  document.body.appendChild(form);
-                  form.submit();
-              },
-              "prefill": {
-                  "name": "{{ user.first_name }}",  // Optionally, prefill user info
-                  "email": "{{ user.email }}",
-                  "contact": "{{ user.phone_number }}"
-              },
-              "theme": {
-                  "color": "#F37254"
-              }
-          };
-      
-          var rzp1 = new Razorpay(options);
-          document.getElementById("confirm-btn").onclick = function (e) {
-              e.preventDefault();
-              rzp1.open();
-          };
-      </script>
-      
-      <!-- Add a button to trigger Razorpay -->
-      <button type="button" id="confirm-btn" class="btn">CONFIRM</button>
 
 </body>
 </html>

@@ -182,11 +182,11 @@
       <div class="container os">
         <div class="row">
           <div class="col-lg-4">
-            <img src="{{prdt.img.url}}" alt="">
-            <h3 class="name">{{prdt.name}}</h3>
+            <img src="{{prod.img.url}}" alt="">
+            <h3 class="name">{{prod.name}}</h3>
           </div>
           <div class="col-lg-8">
-            <form class="addressForm" action="../payment/{{prdt.pk}}" method="post" enctype="multipart/form-data">
+            <form class="addressForm" action="" method="post" enctype="multipart/form-data">
               {% csrf_token %}
               <label for="address">Shipping Address:</label><br>
               <select name="adrs" id="address" required>
@@ -203,7 +203,7 @@
                   <h3>Total Amount Payable:</h3>
                 </div>
                 <div class="col-lg-6">
-                  <h3 class="offerPrice">{{ prdt.offer_price|default:"N/A" }}</h3>
+                  <h3 class="offerPrice">{{ prod.offer_price|default:"N/A" }}</h3>
                 </div>
               </div>
     
@@ -212,50 +212,6 @@
           </div>
         </div>
     
-        <!-- Razorpay Checkout Button -->
-        <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-    
-        <button id="pay-button" disabled>Pay Now</button>
-    
-        <script type="text/javascript">
-          // Get the address select element and Pay Now button
-          var addressSelect = document.getElementById('address');
-          var payButton = document.getElementById('pay-button');
-    
-          // Function to enable or disable the Pay Now button based on address selection
-          addressSelect.addEventListener('change', function() {
-            if (addressSelect.value) {
-              payButton.disabled = false;  // Enable button if an address is selected
-            } else {
-              payButton.disabled = true;   // Disable button if no address is selected
-            }
-          });
-    
-          var options = {
-            "key": "{{ razorpay_key }}", // Your Razorpay Key ID
-            "amount": "{{ razorpay_amount }}", // Amount in paise
-            "currency": "INR",
-            "order_id": "{{ razorpay_order_id }}", // Razorpay Order ID
-            "handler": function (response) {
-              // Handle the payment response
-              alert("Payment Successful: " + response.razorpay_payment_id);
-              // Optionally, update the payment status in your backend here
-            },
-            "theme": {
-              "color": "#F37254"
-            }
-          };
-    
-          // Payment button click event
-          payButton.onclick = function () {
-            if (addressSelect.value) {
-              var rzp1 = new Razorpay(options);
-              rzp1.open();
-            } else {
-              alert("Please select an address before proceeding with payment.");
-            }
-          };
-        </script>
       </div>
     </div>
     

@@ -80,7 +80,7 @@
 <!-- ---------navbar---------- -->
 <nav class="navbar navbar-expand-sm " id="navb">
   <div class="container-fluid">
-    <a class="navbar-brand" href="homep">ROOTED</a>
+    <a class="navbar-brand" href="../homep">ROOTED</a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#collapsibleNavbar">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -95,7 +95,7 @@
           <div class="dropdown-content">
             {% for j in c_data %}
             {% if j.m_cat == i%}
-            <a href="products/{{j.pk}}">{{j.c_name}}</a>
+            <a href="../products/{{j.pk}}">{{j.c_name}}</a>
             {% endif %}
             {% endfor %}
             <a href="./mcatgall/{{i.pk}}">All</a>
@@ -109,18 +109,22 @@
       
       <form class="d-flex" method="GET" action="../search">
         {% csrf_token %}
-        <input class="form-control me-2" type="text" placeholder="Search" value="{{ srch }}" name="query">
-        <button class="btn btn-primary" type="submit" >Search</button>
+        <input id="searchInput" class="form-control me-2" type="text" placeholder="Search" value="{{ srch }}" name="query" autocomplete="off" required>
+        <button class="btn btn-primary" type="submit">Search</button>
+        
         <ul class="navbar-nav me-auto">
-          <li class="nav-item">
-            <a class="nav-link" href="../m_login"><i class="fa-solid fa-user"></i></a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="../view_cart"><i class="fa-solid fa-cart-shopping"></i></a>
-          </li>
-          
+            <li class="nav-item">
+                <a class="nav-link" href="../m_login"><i class="fa-solid fa-user"></i></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="../view_cart"><i class="fa-solid fa-cart-shopping"></i></a>
+            </li>
         </ul>
-      </form>
+        <br><br>
+        <!-- Suggestion dropdown -->
+        <ul id="suggestionsList" class="list-group" style="display:none; position: absolute; background-color: white; z-index: 100; width: 100%; margin-top: 70px; max-height: 200px; overflow-y: auto;">
+        </ul>
+    </form>
 
     </div>  
   </div>
@@ -283,7 +287,65 @@ class="text-center text-lg-start text-white"
 </div>
 </footer>
 <!------------------ Footer end------------------ -->
+<script>
+  const searchInput = document.getElementById('searchInput');
+  const suggestionsList = document.getElementById('suggestionsList');
 
+  // Fetch suggestions from the server
+  searchInput.addEventListener('input', function() {
+      const query = searchInput.value.trim();
+
+      if (query.length >= 2) {  // Only show suggestions if the query length is at least 2 characters
+          fetch(`/search-suggestions/?query=${query}`)
+              .then(response => response.json())
+              .then(data => {
+                  const suggestions = data.suggestions;
+
+                  // Clear previous suggestions
+                  suggestionsList.innerHTML = '';
+
+                  if (suggestions.length > 0) {
+                      // Show the suggestions list
+                      suggestionsList.style.display = 'block';
+
+                      // Add each suggestion to the list
+                      suggestions.forEach(suggestion => {
+                          const li = document.createElement('li');
+                          li.classList.add('list-group-item');
+                          
+                          // Display the suggestion data
+                          li.innerHTML = `
+                              <div>
+                                  <strong>${suggestion.name}</strong>
+                                  <br>
+                                  
+                                 
+                              </div>
+                          `;
+
+                          li.onclick = function() {
+                              searchInput.value = suggestion.name;  // Set the value to the selected suggestion
+                              suggestionsList.style.display = 'none';  // Hide suggestions after selection
+                          };
+
+                          suggestionsList.appendChild(li);
+                      });
+                  } else {
+                      suggestionsList.style.display = 'none';  // Hide suggestions if no matches
+                  }
+              });
+      } else {
+          suggestionsList.style.display = 'none';  // Hide suggestions if query is too short
+      }
+  });
+
+  // Hide suggestions if the user clicks outside the input or suggestion list
+  document.addEventListener('click', function(event) {
+      if (!searchInput.contains(event.target) && !suggestionsList.contains(event.target)) {
+          suggestionsList.style.display = 'none';
+      }
+  });
+</script>
 </body>
 </html>
 

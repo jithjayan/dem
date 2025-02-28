@@ -1,18 +1,20 @@
 from django.db import models
 from django.contrib.auth.models import User
-
-# Create your models here.
+from django.db.models.fields import CharField
+from django.utils.translation import gettext_lazy as _
+from .constants import PaymentStatus
+    # Create your models here.
 class Main_cat(models.Model):
-    m_name=models.TextField(unique=True)
+        m_name=models.TextField(unique=True)
 
-    def __str__(self):
-        return self.m_name
+        def __str__(self):
+            return self.m_name
 class Category(models.Model):
-    c_name=models.TextField()
-    m_cat=models.ForeignKey(Main_cat,on_delete=models.CASCADE)
+        c_name=models.TextField()
+        m_cat=models.ForeignKey(Main_cat,on_delete=models.CASCADE)
 
-    def __str__(self):
-        return self.c_name
+        def __str__(self):
+            return self.c_name
 class Plants(models.Model):
     p_id=models.TextField()
     name=models.TextField()
@@ -43,41 +45,21 @@ class Address(models.Model):
     city=models.TextField()
     state=models.TextField()
 
-class Buy(models.Model):
-
-    STATUS_CHOICES = [
-    ('Pending', 'Pending'),
-    ('Shipped', 'Shipped'),
-    ('Delivered', 'Delivered'),
-    ('Canceled', 'Canceled'),
-    ]
-
+class Bookings(models.Model):
     user=models.ForeignKey(User,on_delete=models.CASCADE)
-    product=models.ForeignKey(Plants,on_delete=models.CASCADE)
+    pro=models.ForeignKey(Plants,on_delete=models.CASCADE)
+    qty=models.TextField()
+    price=models.FloatField()
     address=models.ForeignKey(Address,on_delete=models.CASCADE)
-    qnty=models.PositiveBigIntegerField(default=1)
-    date = models.DateTimeField(auto_now_add=True)
-
-    status = models.CharField(
-        max_length=50, 
-        choices=STATUS_CHOICES, 
-        default='Pending'
-    )
-    razorpay_order_id = models.CharField(max_length=100, blank=True, null=True)
-    payment_status = models.CharField(max_length=20, default="Pending")# New field for tracking delivery status
-
-    def __str__(self):
-        return f"{self.product.name} ({self.status})"
-    
+    date=models.DateField(auto_now_add=True)
 
 class Order(models.Model):
-    buy = models.OneToOneField(Buy, on_delete=models.SET_NULL, null=True, blank=True)  # # Link Order to Buy
-    customer_name = models.CharField(max_length=100)
-
-    phone_number = models.CharField(max_length=15, blank=True, null=True)  # Allows null values
-    email = models.EmailField()
-    address = models.TextField(blank=True, null=True)  # Allows null values
-    created_at = models.DateTimeField(auto_now_add=True)
+    name = CharField(_("Customer Name"), max_length=254, blank=False, null=False)
+    amount = models.FloatField(_("Amount"), null=False, blank=False)
+    status = CharField(_("Payment Status"), default=PaymentStatus.PENDING,max_length=254, blank=False, null=False)
+    provider_order_id = models.CharField(_("Order ID"), max_length=40, null=False, blank=False)
+    payment_id = models.CharField(_("Payment ID"), max_length=36, null=False, blank=False)
+    signature_id = models.CharField(_('Signature ID'),max_length=128, null=False, blank=False)
 
     def __str__(self):
-        return f"Order by {self.customer_name} on {self.created_at}"
+        return f"{self.id}-{self.name}-{self.status}"

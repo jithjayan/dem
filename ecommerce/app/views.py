@@ -8,11 +8,13 @@ from django.contrib.auth.models import User
 from django.contrib import messages
 from django.core.mail import send_mail
 from django.http import HttpResponse
+from django.http import JsonResponse
+import json
 from django.conf import settings
 from django.db.models import Q
 from django.utils.crypto import get_random_string
 from django.views.decorators.csrf import csrf_exempt
-
+from .constants import PaymentStatus
 # Create your views here.
 
 def m_login(req):
@@ -235,12 +237,7 @@ def admin_logout(req):
     logout(req)
     return redirect(user_home)
 
-def view_pro(req,pid):
-    data=Plants.objects.get(pk=pid)
-    m_data=Main_cat.objects.all()
-    c_data=Category.objects.all()
 
-    return render(req,'user/view_pro.html',{'data':data,'m_data':m_data,'c_data':c_data})
 
 
 def search(req):
@@ -391,62 +388,324 @@ def delete_catg(req,pid):
 #     else:
 #         return redirect(m_login)
 
+
+
+# Function to view product details
+def view_pro(req, pid):
+    data = Plants.objects.get(pk=pid)
+    m_data = Main_cat.objects.all()
+    c_data = Category.objects.all()
+    return render(req, 'user/view_pro.html', {'data': data, 'm_data': m_data, 'c_data': c_data})
+
+
+
+
+
+
+# Function to buy the product
 def buy(req, pid):
     if 'user' in req.session:
+        prod = Plants.objects.get(pk=pid)
         user = User.objects.get(username=req.session['user'])
-        prdt = Plants.objects.get(pk=pid)
         data = Address.objects.filter(user=user)
 
-        # Step 1: Create a Razorpay Order
-        client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
-        
-        # Assuming the price is in INR
-        amount = prdt.offer_price * 100  # Razorpay expects the amount in paise (cents)
+        if data:
+            # Store product ID in session before proceeding
+            req.session['pid'] = prod.pk
+            return redirect("orderSummary", prod=prod.pk, data=data)
+        else:
+            return render(req, "user/adrs.html")
+    else:
+        return redirect(m_login)
 
-        # Create order in Razorpay
-        order_data = {
-            'amount': amount,  # Amount in paise
-            'currency': 'INR',
-            'payment_capture': '1'  # Auto-capture payment
-        }
+# Order summary page before payment
+def orderSummary(req, prod, data):
+    if 'user' in req.session:
+        prod = Plants.objects.get(pk=prod)
+        user = User.objects.get(username=req.session['user'])
+        data = Address.objects.filter(user=user)
 
-        razorpay_order = client.order.create(data=order_data)
-        
-        # Step 2: Save the Razorpay order ID to the database
-        buy_instance = Buy.objects.create(
-            user=user,
-            product=prdt,
-            address=data[0],  # Assuming first address for simplicity
-            qnty=1
-        )
-        buy_instance.razorpay_order_id = razorpay_order['id']
-        buy_instance.save()
-
-        # Step 3: Render the payment page with the order details
-        context = {
-            'data': data,
-            'prdt': prdt,
-            'razorpay_order_id': razorpay_order['id'],
-            'razorpay_key': settings.RAZORPAY_KEY_ID,
-            'razorpay_amount': amount,
-        }
-        return render(req, 'user/buy.html', context)
+        if req.method == 'POST':
+            address = req.POST['adrs']
+            addr = Address.objects.get(user=user, pk=address)
+            req.session['address'] = addr.pk  # Store address in session
+            return redirect(order_payment)
+        else:
+            return render(req, 'user/buy.html', {'prod': prod, 'data': data})
     else:
         return redirect('m_login')
-    
 
-def cart_buy(req):
+# Payment page
+def order_payment(req):
     if 'user' in req.session:
         user = User.objects.get(username=req.session['user'])
-        cart = Cart.objects.filter(user=user)
-        data = Address.objects.filter(user=user)
-        return render(req, 'user/cart_buy.html')
+        product = Plants.objects.get(pk=req.session['pid'])
+        amount = product.offer_price * 100  # Razorpay expects amount in paise (1 INR = 100 paise)
 
-    return redirect(m_login)
+        client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
+        razorpay_order = client.order.create({
+            "amount": amount,
+            "currency": "INR",
+            "payment_capture": "1"
+        })
+
+        order_id = razorpay_order['id']
+        order = Order.objects.create(
+            name=user.first_name,
+            amount=product.offer_price,
+            provider_order_id=order_id,
+            payment_id='',
+            signature_id=''
+        )
+        order.save()
+
+        return render(
+            req, 
+            "user/payment.html", 
+            {
+                "callback_url": "http://127.0.0.1:8000/callback",
+                "razorpay_key": settings.RAZORPAY_KEY_ID,
+                "order": order,
+            }
+        )
+    else:
+        return render(req, 'm_login')
+
+# Callback function after payment
+@csrf_exempt
+def callback(request):
+    def verify_signature(response_data):
+        client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
+        return client.utility.verify_payment_signature(response_data)
+
+    if "razorpay_signature" in request.POST:
+        payment_id = request.POST.get("razorpay_payment_id", "")
+        provider_order_id = request.POST.get("razorpay_order_id", "")
+        signature_id = request.POST.get("razorpay_signature", "")
+
+        order = Order.objects.get(provider_order_id=provider_order_id)
+        order.payment_id = payment_id
+        order.signature_id = signature_id
+
+        if not verify_signature(request.POST):
+            order.status = PaymentStatus.SUCCESS
+            order.save()
+            return redirect("book")  # Redirect to a success page or a generic 'book' page
+
+        else:
+            order.status = PaymentStatus.FAILURE
+            order.save()
+
+            return redirect("book")  # Redirect to a failure page or a generic 'book' page
+    else:
+        payment_id = json.loads(request.POST.get("error[metadata]")).get("payment_id")
+        provider_order_id = json.loads(request.POST.get("error[metadata]")).get("order_id")
+        
+        order = Order.objects.get(provider_order_id=provider_order_id)
+        order.payment_id = payment_id
+        order.status = PaymentStatus.FAILURE
+        order.save()
+
+        return render(request, "callback.html", context={"status": order.status}) 
+
+# Finalize the booking
+def book(req):
+    if 'user' in req.session:
+        address = Address.objects.get(pk=req.session['address'])
+        prod = Plants.objects.get(pk=req.session['pid'])
+        user = User.objects.get(username=req.session['user'])
+
+        data = Bookings.objects.create(
+            user=user,
+            pro=prod,
+            qty=1,
+            price=prod.offer_price,
+            address=address
+        )
+        data.save()
+
+        prod.stock -= 1  # Reduce the stock
+        prod.save()
+
+        return redirect(bookings)  # Redirect to the user home page
+    else:
+        return redirect(m_login)
+
+
+def bookings(req):
+    if 'user' in req.session:
+        user=User.objects.get(username=req.session['user'])
+        data=Bookings.objects.filter(user=user)[: : -1]
+        plants=Plants.objects.all()
+        cat=Category.objects.all()
+        c_data=Category.objects.all()
+        p_data=Plants.objects.all()
+        m_data=Main_cat.objects.all()
+        return render(req,'user/bookings.html',{'data':data,'cat':cat,'Plants':plants,'c_data':c_data,'p_data':p_data,'m_data':m_data})
+    else:
+        return redirect(m_login)
 
 
 
 
+
+    
+def view_cart(req):
+    if 'user' in req.session:
+        user=User.objects.get(username=req.session['user'])
+        cart_dtls=Cart.objects.filter(user=user)
+        m_data=Main_cat.objects.all()
+        c_data=Category.objects.all()
+        total=0
+        for i in cart_dtls:
+            total+=i.price
+        return render(req,'user/cart.html',{'cart_dtls':cart_dtls,'total':total,'m_data':m_data,'c_data':c_data})
+    else:
+        return redirect(m_login)
+    
+def buyAll(req):
+    if 'user' in req.session:
+        user=User.objects.get(username=req.session['user'])
+        cart=Cart.objects.filter(user=user)
+        price=0
+
+        
+        for i in cart:
+            price+=(i.Plants.offer_price)*i.qty
+        total=price
+        data=Address.objects.filter(user=user)
+        if data:
+            # return render(req,'user/orderSummary2.html',{'cart':cart,'data':data,'discount':discount,'price':price,'total':total})
+            return redirect(orderSummary2,price=price,total=total)
+        else:
+            return render(req,"user/addAddress.html")
+    else:
+        return redirect(m_login) 
+    
+def orderSummary2(req,price,total):
+    if 'user' in req.session:
+        user=User.objects.get(username=req.session['user'])
+        data=Address.objects.filter(user=user)
+        cart=Cart.objects.filter(user=user)
+        if req.method == 'POST':
+            address=req.POST['address']
+            addr=Address.objects.get(user=user,pk=address)
+            req.session['address']=addr.pk
+            return redirect("payment2")
+        else:
+            return render(req,'user/cart_buy.html',{'cart':cart,'data':data,'price':price,'total':total})
+    else:
+        return redirect(m_login)
+
+def payment2(req):
+    if 'user' in req.session:
+        user = User.objects.get(username=req.session['user'])
+        name = user.first_name
+        cart=Cart.objects.filter(user=user)
+        price=0
+        for i in cart:
+            price+=(i.Plants.offer_price)*i.qty
+        total=price
+        amount = total
+        client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
+        razorpay_order = client.order.create(
+            {"amount": int(amount) * 100, "currency": "INR", "payment_capture": "1"}
+        )
+        order_id=razorpay_order['id']
+        order = Order.objects.create(
+            name=name, amount=amount, provider_order_id=order_id
+        )
+        order.save()
+        return render(
+            req,
+            "user/payment2.html",
+            {
+                "callback_url": "http://127.0.0.1:8000/callback2",
+                "razorpay_key": settings.RAZORPAY_KEY_ID,
+                "order": order,
+            },
+        )
+    else:
+        return render(m_login)
+
+@csrf_exempt
+def callback2(request):
+    def verify_signature(response_data):
+        client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
+        return client.utility.verify_payment_signature(response_data)
+
+    if "razorpay_signature" in request.POST:
+        payment_id = request.POST.get("razorpay_payment_id", "")
+        provider_order_id = request.POST.get("razorpay_order_id", "")
+        signature_id = request.POST.get("razorpay_signature", "")
+
+        order = Order.objects.get(provider_order_id=provider_order_id)
+        order.payment_id = payment_id
+        order.signature_id = signature_id
+        if  verify_signature(request.POST):
+            order.status = PaymentStatus.SUCCESS
+            order.save()
+            return redirect("book2")  
+        else:
+            order.status = PaymentStatus.FAILURE
+            order.save()
+            return redirect("book2")  
+ 
+
+    else:
+
+        payment_id = json.loads(request.POST.get("error[metadata]")).get("payment_id")
+        provider_order_id = json.loads(request.POST.get("error[metadata]")).get(
+            "order_id"
+        )
+        order = Order.objects.get(provider_order_id=provider_order_id)
+        order.payment_id = payment_id
+        order.status = PaymentStatus.FAILURE
+        order.save()
+        return render(request, "callback.html", context={"status": order.status})  
+
+def book2(req):
+    if 'user' in req.session:
+        user=User.objects.get(username=req.session['user'])
+        address=Address.objects.get(pk=req.session['address'])
+        cart=Cart.objects.filter(user=user)
+        for i in cart:
+            data=Bookings.objects.create(user=i.user,pro=i.Plants,qty=i.qty,price=i.price,address=Address.objects.get(pk=address.pk))
+            data.save()
+        cart.delete()
+        return redirect(bookings)
+    else:
+        return redirect(m_login)
+
+
+def deleteBookings(req,pid):
+    if 'user' in req.session:
+        data=Bookings.objects.get(pk=pid)
+        data.delete()
+        return redirect(bookings)
+    else:
+        return redirect(m_login)
+
+def search_suggestions(request):
+    query = request.GET.get('query', '').strip()
+
+    if query:
+        # Get Plants matching the query, limit the results to 5
+        plants = Plants.objects.filter(name__icontains=query)[:5]
+        
+        suggestions = []
+        for plant in plants:
+            suggestion = {
+                'name': plant.name,
+                # 'price': plant.price,
+                # 'offer_price': plant.offer_price,
+                # 'image': plant.img.url if plant.img else None,  # Image URL (if available)
+            }
+            suggestions.append(suggestion)
+    else:
+        suggestions = []
+
+    return JsonResponse({'suggestions': suggestions})
 
 
 
@@ -466,12 +725,12 @@ def cart_buy(req):
 
 def manage_orders(req):
     if req.user.is_authenticated and req.user.is_staff:
-        orders = Buy.objects.all()
+        orders = Order.objects.all()
         
         if req.method == 'POST':
             order_id = req.POST.get('order_id')
             new_status = req.POST.get('status')
-            order = Buy.objects.get(id=order_id)
+            order = Order.objects.get(id=order_id)
             order.status = new_status
             order.save()
             return redirect('manage_orders')  # Correct the redirect to 'manage_orders' after status update
@@ -600,7 +859,6 @@ def admin_home(req):
     c_data=Category.objects.all()
     p_data=Plants.objects.all()
     m_data=Main_cat.objects.all()
-    
     return render(req,'admin/adminhome.html',{'c_data':c_data,'p_data':p_data,'m_data':m_data})
 
 def view_prdts(req):
