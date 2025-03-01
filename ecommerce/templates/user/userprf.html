@@ -18,7 +18,7 @@
 
   <nav class="navbar navbar-expand-sm " id="navb">
     <div class="container-fluid">
-      <a class="navbar-brand" href="homep">ROOTED</a>
+      <a class="navbar-brand" href="../homep">ROOTED</a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#collapsibleNavbar">
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -33,10 +33,10 @@
             <div class="dropdown-content">
               {% for j in c_data %}
               {% if j.m_cat == i%}
-              <a href="products/{{j.pk}}">{{j.c_name}}</a>
+              <a href="../products/{{j.pk}}">{{j.c_name}}</a>
               {% endif %}
               {% endfor %}
-              <a href="./mcatgall/{{i.pk}}">All</a>
+              <a href="../mcatgall/{{i.pk}}">All</a>
             </div>
             
   
@@ -51,10 +51,10 @@
           <button class="btn btn-primary" type="submit" >Search</button>
           <ul class="navbar-nav me-auto">
             <li class="nav-item">
-              <a class="nav-link" href="m_login"><i class="fa-solid fa-user"></i></a>
+              <a class="nav-link" href="../m_login"><i class="fa-solid fa-user"></i></a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="view_cart"><i class="fa-solid fa-cart-shopping"></i></a>
+              <a class="nav-link" href="../view_cart"><i class="fa-solid fa-cart-shopping"></i></a>
             </li>
             <!-- <li class="nav-item">
               <a class="nav-link" href="../bookings">bookings</a>
@@ -82,8 +82,8 @@
                             href="#account-general">General</a>
                         <!-- <a class="list-group-item list-group-item-action" data-toggle="list"
                             href="#account-change-password">Change password</a> -->
-                        <a class="list-group-item list-group-item-action" data-toggle="list"
-                            href="bookings">Orders</a>
+                        <!-- <a class="list-group-item list-group-item-action" data-toggle="list"
+                            href="bookings">Orders</a> -->
                         <a class="list-group-item list-group-item-action" data-toggle="list"
                             href="#account-social-links">Manage Address</a>
                         <!-- <a class="list-group-item list-group-item-action" data-toggle="list"
@@ -106,12 +106,12 @@
                             <div class="card-body">
                               
                                 <div class="form-group">
-                                    <label class="form-label">Name</label>
-                                    <input type="text" class="form-control" value="{{user}}">
+                                    <label class="form-label" style="text-decoration: underline; font-size: 20px;">Name</label>
+                                    <p>{{user.first_name}}</p>
                                 </div>
                                 <div class="form-group">
-                                    <label class="form-label">E-mail</label>
-                                    <input type="text" class="form-control mb-1" value="{{user.email}}">
+                                    <label class="form-label" style="text-decoration: underline; font-size: 20px;">E-mail</label>
+                                    <p>{{user.email}}</p>
                                     <!-- <div class="alert alert-warning mt-3">
                                         Your email is not confirmed. Please check your inbox.<br>
                                         <a href="javascript:void(0)">Resend confirmation</a>

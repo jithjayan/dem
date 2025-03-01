@@ -209,7 +209,9 @@ def user_prfl(req):
     if 'user' in req.session:
         user=User.objects.get(username=req.session['user'])
         data1=Address.objects.filter(user=user)
-
+        c_data=Category.objects.all()
+        p_data=Plants.objects.all()
+        m_data=Main_cat.objects.all()
         if req.method == 'POST':
             user=User.objects.get(username=req.session['user'])
             name=req.POST['name']
@@ -225,7 +227,7 @@ def user_prfl(req):
         else:
             return render(req,'user/userprf.html',{'data1':data1})
     else:
-        return render(req,"user/userprf.html",{'data1':data1,'user':user})
+        return render(req,"user/userprf.html",{'data1':data1,'user':user,'c_data':c_data,'p_data':p_data,'m_data':m_data})
 
 def user_logout(req):
     req.session.flush()
@@ -408,7 +410,7 @@ def buy(req, pid):
         prod = Plants.objects.get(pk=pid)
         user = User.objects.get(username=req.session['user'])
         data = Address.objects.filter(user=user)
-
+        
         if data:
             # Store product ID in session before proceeding
             req.session['pid'] = prod.pk
@@ -424,14 +426,16 @@ def orderSummary(req, prod, data):
         prod = Plants.objects.get(pk=prod)
         user = User.objects.get(username=req.session['user'])
         data = Address.objects.filter(user=user)
-
+        c_data=Category.objects.all()
+        p_data=Plants.objects.all()
+        m_data=Main_cat.objects.all()
         if req.method == 'POST':
             address = req.POST['adrs']
             addr = Address.objects.get(user=user, pk=address)
             req.session['address'] = addr.pk  # Store address in session
             return redirect(order_payment)
         else:
-            return render(req, 'user/buy.html', {'prod': prod, 'data': data})
+            return render(req, 'user/buy.html', {'prod': prod, 'data': data,'c_data':c_data,'p_data':p_data,'m_data':m_data})
     else:
         return redirect('m_login')
 
@@ -514,7 +518,7 @@ def book(req):
         address = Address.objects.get(pk=req.session['address'])
         prod = Plants.objects.get(pk=req.session['pid'])
         user = User.objects.get(username=req.session['user'])
-
+        
         data = Bookings.objects.create(
             user=user,
             pro=prod,
@@ -541,7 +545,8 @@ def bookings(req):
         c_data=Category.objects.all()
         p_data=Plants.objects.all()
         m_data=Main_cat.objects.all()
-        return render(req,'user/bookings.html',{'data':data,'cat':cat,'Plants':plants,'c_data':c_data,'p_data':p_data,'m_data':m_data})
+        data2=Order.objects.all()
+        return render(req,'user/bookings.html',{'data':data,'cat':cat,'Plants':plants,'c_data':c_data,'p_data':p_data,'m_data':m_data,"data2":data2})
     else:
         return redirect(m_login)
 
@@ -723,22 +728,37 @@ def search_suggestions(request):
 
 
 
+# def manage_orders(req):
+#     if req.user.is_authenticated and req.user.is_staff:
+#         orders = Order.objects.all()
+#         data=Bookings.objects.filter()
+#         if req.method == 'POST':
+#             order_id = req.POST.get('order_id')
+#             new_status = req.POST.get('status')
+#             order = Order.objects.get(id=order_id)
+#             order.status = new_status
+#             order.save()
+#             return redirect('manage_orders')  # Correct the redirect to 'manage_orders' after status update
+        
+#         return render(req, 'admin/manage_orders.html', {'orders': orders,'data':data})
+#     else:
+#         return redirect('m_login') 
+
 def manage_orders(req):
     if req.user.is_authenticated and req.user.is_staff:
-        orders = Order.objects.all()
-        
+        bookings = Bookings.objects.all()  # Retrieve all bookings
+        data=Order.objects.all()
         if req.method == 'POST':
-            order_id = req.POST.get('order_id')
+            booking_id = req.POST.get('booking_id')
             new_status = req.POST.get('status')
-            order = Order.objects.get(id=order_id)
-            order.status = new_status
-            order.save()
-            return redirect('manage_orders')  # Correct the redirect to 'manage_orders' after status update
-        
-        return render(req, 'admin/manage_orders.html', {'orders': orders})
+            data = Order.objects.get(id=booking_id)
+            data.status = new_status
+            data.save()
+            return redirect('manage_orders')  # Redirect after updating status
+
+        return render(req, 'admin/manage_orders.html', {'bookings': bookings,'data':data})
     else:
         return redirect('m_login') 
-
 
 def payment(req,pid):
     if 'user' in req.session:
@@ -818,9 +838,11 @@ def mcatgall(req, pid):
     
     # Retrieve all plants that belong to this Main_cat
     plants = Plants.objects.filter(mcatg=main_cat)
-    
+    c_data=Category.objects.all()
+    p_data=Plants.objects.all()
+    m_data=Main_cat.objects.all()
     # Pass the plants and main_cat to the template
-    return render(req, 'user/mcatgall.html', {'plants': plants, 'main_cat': main_cat})
+    return render(req, 'user/mcatgall.html', {'plants': plants, 'main_cat': main_cat,'c_data':c_data,'p_data':p_data,'m_data':m_data})
 
 
 
@@ -906,7 +928,9 @@ def delete_prd(req,pid):
 def products(req,pid):
     data=Plants.objects.filter(catg=pid)
     c_data=Category.objects.all()
-    return render(req,'user/products.html',{'data':data,'c_data':c_data})
+    p_data=Plants.objects.all()
+    m_data=Main_cat.objects.all()
+    return render(req,'user/products.html',{'data':data,'c_data':c_data,'p_data':p_data,'m_data':m_data})
  
 
 

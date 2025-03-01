@@ -107,7 +107,7 @@
       </ul>
 
       
-      <form class="d-flex" method="GET" action="../search">
+      <form class="d-flex" method="GET" action="../search" onsubmit="return validateSearch()">
         {% csrf_token %}
         <input id="searchInput" class="form-control me-2" type="text" placeholder="Search" value="{{ srch }}" name="query" autocomplete="off" required>
         <button class="btn btn-primary" type="submit">Search</button>

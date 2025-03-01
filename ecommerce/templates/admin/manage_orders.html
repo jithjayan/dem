@@ -108,35 +108,26 @@
 </head>
 <body>
     <div class="container">
-        <h2>Manage Orders</h2>
+        <h2>Manage Bookings</h2>
         <table class="table">
             <thead>
                 <tr>
-                    <th>Order ID</th>
+                    <th>Booking ID</th>
+                    <th>User</th>
                     <th>Product</th>
-                    <th>Status</th>
-                    <th>Action</th>
+                    <th>Quantity</th>
+                    <th>Price</th>
                 </tr>
             </thead>
             <tbody>
-                {% for order in orders %}
+                {% for booking in bookings %}
                 <tr>
-                    <td>{{ order.id }}</td>
-                    <td>{{ order.product.name }}</td>
-                    <td>{{ order.status }}</td>
-                    <td>
-                        <form method="post">
-                            {% csrf_token %}
-                            <input type="hidden" name="order_id" value="{{ order.id }}">
-                            <select name="status">
-                                <option value="Pending" {% if order.status == 'Pending' %}selected{% endif %}>Pending</option>
-                                <option value="Shipped" {% if order.status == 'Shipped' %}selected{% endif %}>Shipped</option>
-                                <option value="Delivered" {% if order.status == 'Delivered' %}selected{% endif %}>Delivered</option>
-                                <option value="Canceled" {% if order.status == 'Canceled' %}selected{% endif %}>Canceled</option>
-                            </select>
-                            <button type="submit" class="btn">Update Status</button>
-                        </form>
-                    </td>
+                    <td>{{ booking.id }}</td>
+                    <td>{{ booking.user.username }}</td>  <!-- Assuming user has a username -->
+                    <td>{{ booking.pro.name }}</td>  <!-- Assuming 'pro' is a reference to a Product model -->
+                    <td>{{ booking.qty }}</td>
+                    <td>{{ booking.price }}</td>
+                    
                 </tr>
                 {% endfor %}
             </tbody>

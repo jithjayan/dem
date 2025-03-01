@@ -150,7 +150,7 @@
         {% for i in data %}
         <div class="row row1">
             <div class="col-6">
-                <img src="{{i.pro.img.url}}" alt="Product Image">
+                <img src="{{i.pro.img.url}}" alt="Product Image" style="width: 50%;">
             </div>
             <div class="col-lg-6">
                 <div class="row row2">
@@ -171,6 +171,7 @@
                 </div>
                 <!-- Delete button -->
                 <a class="btn btn-delete" href="../deleteBookings/{{i.pk}}" onclick="return confirm('Are you sure you want to delete this booking?');">Delete</a>
+
             </div>
         </div>
         {% endfor %}
